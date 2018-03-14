@@ -1,4 +1,4 @@
-Jordan M: Memory.vhdl, Register File
+Jordan M: Memory.vhdl
 John H: Decode.vhdl
 Logan M: Register File 
 Roy H: Register Select, Destination, Address Select

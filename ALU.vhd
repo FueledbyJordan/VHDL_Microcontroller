@@ -25,14 +25,16 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity ALU is
     Port (
-        operand_one : in STD_LOGIC_VECTOR(7 downto 0);
-        operand_two : in STD_LOGIC_VECTOR(7 downto 0);
+        A : in STD_LOGIC_VECTOR(7 downto 0);
+        B : in STD_LOGIC_VECTOR(7 downto 0);
         aluop : in STD_LOGIC_VECTOR(3 downto 0);
         result : out STD_LOGIC_VECTOR(15 downto 0);
     );
-end ALU;
+end entity;
 
-architecture Testing of ALU is
+--TODO: Implement ALU op logic.
+
+architecture Arch of ALU is
     constant DATA_WIDTH : integer := 8;
     constant OP_WIDTH : integer := 4;
     
@@ -61,76 +63,57 @@ architecture Testing of ALU is
 
 begin
 
-    process(operand_one, operand_two, operator)
+    process(operand_one, operand_two, aluop)
     begin
-        case operator is
-            when OP_ADD =>
-                arith_result := STD_LOGIC_VECTOR("00"&unsigned(operand_one) + unsigned(operand_two));
-                logic_result := (DATA_WIDTH - 1 downto 0 => '0');
-            when OP_SUB =>
-                arith_result := STD_LOGIC_VECTOR("00"&unsigned(operand_one) - unsigned(operand_two));
-                logic_result := (DATA_WIDTH - 1 downto 0 => '0');
-            when OP_MUL =>
-                assert operand_one <= "11111111" report "Multiplication operands must be no more than a byte." severity error;
-                assert operand_two <= "11111111" report "Multiplication operands must be no more than a byte." severity error;
-                arith_result := STD_LOGIC_VECTOR("00"&unsigned(operand_one(7 downto 0)) * unsigned(operand_two(7 downto 0)));
-                logic_result := (DATA_WIDTH - 1 downto 0 => '0');
-            when OP_INC =>
-                arith_result := STD_LOGIC_VECTOR("00"&unsigned(operand_one) + 1);
-                logic_result := (DATA_WIDTH - 1 downto 0 => '0');
-            when OP_DEC =>
-                arith_result := STD_LOGIC_VECTOR("00"&unsigned(operand_one) - 1);
-                logic_result := (DATA_WIDTH - 1 downto 0 => '0');
+        case aluop is
             when OP_AND =>
-                logic_result := operand_one and operand_two;
-                arith_result := (17 downto 0 => '0');
+                arith_result := ZERO;
+                logic_result := ZERO;
             when OP_OR =>
-                logic_result := operand_one or operand_two;
-                arith_result := (17 downto 0 => '0');
-            when OP_XOR =>
-                logic_result := operand_one xor operand_two;
-                arith_result := (17 downto 0 => '0');
-            when OP_NOT =>
-                logic_result := not operand_one;
-                arith_result := (17 downto 0 => '0');
-            when OP_ROL =>
-                logic_result := STD_LOGIC_VECTOR(rotate_left(unsigned(operand_one), to_integer(unsigned(operand_two))));
-                arith_result := (17 downto 0 => '0');
-            when OP_ROR =>
-                logic_result := STD_LOGIC_VECTOR(rotate_right(unsigned(operand_one), to_integer(unsigned(operand_two))));         
-                arith_result := (17 downto 0 => '0');
+                arith_result := ZERO;
+                logic_result := ZERO;
+            when OP_ADD =>
+                arith_result := ZERO;
+                logic_result := ZERO;
+            when OP_SUB =>
+                arith_result := ZERO;
+                logic_result := ZERO;
+            when OP_LW =>
+                arith_result := ZERO;
+                logic_result := ZERO;
+            when OP_SW =>
+                logic_result := ZERO;
+                arith_result := ZERO;
+            when OP_MOV =>
+                logic_result := ZERO;
+                arith_result := ZERO;
+            when OP_NOP =>
+                logic_result := ZERO;
+                arith_result := ZERO;
+            when OP_JEQ =>
+                logic_result := ZERO;
+                arith_result := ZERO;
+            when OP_JNE =>
+                logic_result := ZERO;
+                arith_result := ZERO;
+            when OP_JGT =>
+                logic_result := ZERO;
+                arith_result := ZERO;
+            when OP_JLT =>
+                logic_result := ZERO;
+                arith_result := ZERO;
+            when OP_LWI =>
+                logic_result := ZERO;
+                arith_result := ZERO;
+            when OP_SWI =>
+                logic_result := ZERO;
+                arith_result := ZERO;
             when OTHERS =>
             
         end case;
-        
-        if (operator >= "0000" and operator <= "1010") then  
-            temp_result := logic_result or arith_result(DATA_WIDTH - 1 downto 0);
+
+	temp_result <= logic_result or arith_result;
+        result <= temp_result;
             
-            temp_zero := '0';
-            temp_carry := '0';
-            temp_negative := '0';
-            temp_overflow := '0';
-            
-            if (temp_result = ZERO) then
-                temp_zero := '1';
-            end if;
-            
-            if (operator = OP_MUL) then
-                temp_overflow := arith_result(17);
-                temp_carry := arith_result(16);
-            end if;
-            
-            if (arith_result(16) = '1' and (operator = OP_ADD or operator = OP_INC)) then
-                temp_carry := '1';
-            end if;
-            
-            if (arith_result(17 downto 16) /= "00" and (operator = OP_SUB or operator = OP_DEC)) then
-                temp_negative := '1';
-            end if;
-                    
-            result <= temp_result;
-            status <= "0000" & temp_overflow & temp_negative & temp_carry & temp_zero;
-            
-        end if;
     end process;
-end Testing;
+end Arch;

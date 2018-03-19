@@ -17,7 +17,7 @@ LIBRARY IEEE;
         SIGNAL MEMORY : MEM_2048;
         SIGNAL ADDR : INTEGER RANGE 0 TO 255;
         BEGIN
-            PROCESS(ADDRESS, DATAIN, W_R)
+            PROCESS(ADDRESS, DATAIN, readwrite, clk, rst)
             BEGIN
                 IF(rising_edge(clk)) THEN
                     IF(rst='1') THEN

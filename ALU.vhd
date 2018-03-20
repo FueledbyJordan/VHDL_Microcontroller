@@ -68,10 +68,10 @@ begin
         case aluop is
             when OP_AND =>
                 arith_result := ZERO;
-                logic_result := ZERO;
+                logic_result := a and b;
             when OP_OR =>
                 arith_result := ZERO;
-                logic_result := ZERO;
+                logic_result := a or b;
             when OP_ADD =>
                 arith_result := ZERO;
                 logic_result := ZERO;
@@ -91,16 +91,32 @@ begin
                 logic_result := ZERO;
                 arith_result := ZERO;
             when OP_JEQ =>
-                logic_result := ZERO;
+                if (a = ZERO) then
+                    -- PC = b
+                else
+                    logic_result := ZERO;
+                end if;
                 arith_result := ZERO;
             when OP_JNE =>
-                logic_result := ZERO;
+                if (a /= ZERO) then
+                    -- PC = b
+                else
+                    logic_result := ZERO;
+                end if;
                 arith_result := ZERO;
             when OP_JGT =>
-                logic_result := ZERO;
+                if (a > ZERO) then
+                    -- PC = b
+                else
+                    logic_result := ZERO;
+                end if;
                 arith_result := ZERO;
             when OP_JLT =>
-                logic_result := ZERO;
+                if (a < ZERO) then
+                    -- PC = b
+                else
+                    logic_result := ZERO;
+                end if;
                 arith_result := ZERO;
             when OP_LWI =>
                 logic_result := ZERO;
@@ -112,7 +128,7 @@ begin
             
         end case;
 
-	temp_result <= logic_result or arith_result;
+        temp_result <= logic_result or arith_result;
         result <= temp_result;
             
     end process;

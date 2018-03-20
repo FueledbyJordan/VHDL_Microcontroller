@@ -63,12 +63,10 @@ begin
     begin
       case stage is
         when "10" =>
-          addrsel_mux_2_mux := addrsel_mux_2_mux; -- load the addrsel output to the signal between the MUXs
+          addrsel <= addrsel_mux_2_mux; -- load the addrsel output to the signal between the MUXs
         when others =>
-          addrsel_mux_2_mux := PC;
+          addrsel <= PC;
       end case;
     end process;
-    
-    addrsel <= addrsel_mux_2_mux;
-          
+
 end Behavioral;

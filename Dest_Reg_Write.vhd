@@ -34,7 +34,7 @@ use UNISIM.VComponents.all;
 
 entity Dest_Reg_Write is
   Port ( 
-  op1op2: in std_logic_vector(3 downto 2);
+  op1op2: in std_logic_vector(3 downto 0);
   stage:  in std_logic_vector(1 downto 0);
   dwrite: out std_logic
   );
@@ -57,13 +57,11 @@ begin
   process(stage)
     begin
       case stage is
-        when "01" =>
-          dwrite_mux_2_mux := dwrite_mux_2_mux; -- set the dwrite output to equal the signal (will be one clock-cycle delayed
+        when "10" =>
+          dwrite <= dwrite_mux_2_mux; -- set the dwrite output to equal the signal (will be one clock-cycle delayed
         when others =>
-          dwrite_mux_2_mux := '0';
+          dwrite <='0';
       end case;
-    end process;     
-    
-  dwrite <= dwrite_mux_2_mux;
-    
+    end process;
+
 end Behavioral;

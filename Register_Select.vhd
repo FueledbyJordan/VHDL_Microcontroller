@@ -48,10 +48,11 @@ end Register_Select;
 
 architecture Behavioral of Register_Select is
 --type operator is (zero, one, two, three);
---signal regsel_temp: std_logic_vector(7 downto 0); -- temp value to regsel
-shared variable regsel_mux_2_mux:   std_logic_vector(7 downto 0); -- output from one mux is input to next mux
+signal regsel_temp: std_logic_vector(7 downto 0); -- temp value to regsel
+shared variable regsel_mux_2_mux: std_logic_vector(7 downto 0); -- output from one mux is input to next mux
 
 begin
+
   process(op1op2)
     begin
       case op1op2 is
@@ -70,12 +71,10 @@ begin
     begin
       case stage is
         when "10" => -- stage my need to be set to "01" (stage 1) to account for timing issue
-          regsel_mux_2_mux := regsel_mux_2_mux; ---- load the regsel output with the signal between the MUXs
+          regsel <= regsel_mux_2_mux; ---- load the regsel output with the signal between the MUXs
         when others =>
-          regsel_mux_2_mux := Immediate;
+          regsel <= Immediate;
       end case;
     end process;
-
-  regsel <= regsel_mux_2_mux;
 
 end Behavioral;

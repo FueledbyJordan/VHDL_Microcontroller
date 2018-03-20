@@ -32,7 +32,7 @@ entity ALU is
     );
 end entity;
 
---TODO: Implement ALU op logic.
+--TODO: LW, SW, LWI, SWI, Comparisons and tie everything together.
 
 architecture Arch of ALU is
     constant DATA_WIDTH : integer := 8;
@@ -119,9 +119,11 @@ begin
                 end if;
                 arith_result := ZERO;
             when OP_LWI =>
+                -- a = Mem(b)
                 logic_result := ZERO;
                 arith_result := ZERO;
             when OP_SWI =>
+                -- Mem(a) = a
                 logic_result := ZERO;
                 arith_result := ZERO;
             when OTHERS =>

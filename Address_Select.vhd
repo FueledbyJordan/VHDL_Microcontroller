@@ -34,7 +34,8 @@ use UNISIM.VComponents.all;
 
 entity Address_Select is
   Port ( 
-  op1op2:       in std_logic_vector(3 downto 0);
+  op1:          in std_logic_vector(1 downto 0);
+  op2:          in std_logic_vector(1 downto 0);
   stage:        in std_logic_vector(1 downto 0);
   PC:           in std_logic_vector(7 downto 0);
   Rs:           in std_logic_vector(7 downto 0);
@@ -44,12 +45,14 @@ entity Address_Select is
 end Address_Select;
 
 architecture Behavioral of Address_Select is
+signal operator: std_logic_vector(3 downto 0);
 shared variable addrsel_mux_2_mux: std_logic_vector(7 downto 0);
-begin
 
-  process(op1op2)
+begin
+operator <= op1&op2;
+  process(operator)
     begin
-      case op1op2 is
+      case operator is
         when "0100"|"0001" =>
           addrsel_mux_2_mux := Rs; -- load the signal between the MUXs with Source Register value
         when "1100"|"1101" =>

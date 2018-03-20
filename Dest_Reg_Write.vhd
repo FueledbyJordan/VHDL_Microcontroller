@@ -34,19 +34,22 @@ use UNISIM.VComponents.all;
 
 entity Dest_Reg_Write is
   Port ( 
-  op1op2: in std_logic_vector(3 downto 0);
-  stage:  in std_logic_vector(1 downto 0);
-  dwrite: out std_logic
+  op1:      in std_logic_vector(1 downto 0);
+  op2:      in std_logic_vector(1 downto 0);
+  stage:    in std_logic_vector(1 downto 0);
+  dwrite:   out std_logic
   );
 end Dest_Reg_Write;
 
 architecture Behavioral of Dest_Reg_Write is
+signal operator: std_logic_vector(3 downto 0);
 shared variable dwrite_mux_2_mux: std_logic; -- create signal between the two MUXs
-begin
 
-  process(op1op2)
+begin
+operator <= op1&op2;
+  process(operator)
     begin
-      case op1op2 is
+      case operator is
         when "0000"|"0001"|"0010"|"0011"|"0100"|"0110"|"1100"|"1110" => -- values from table
           dwrite_mux_2_mux := '1'; -- set signal between MUXs to HIGH
         when others =>

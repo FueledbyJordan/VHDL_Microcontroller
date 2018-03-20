@@ -40,7 +40,8 @@ entity Register_Select is
   Datain:       in std_logic_vector(7 downto 0);
   Rs:           in std_logic_vector(7 downto 0);
   Immediate:    in std_logic_vector(7 downto 0);
-  op1op2:       in std_logic_vector(3 downto 0); -- may need to make as two inputs of 2- bits each
+  op1:          in std_logic_vector(1 downto 0);
+  op2:          in std_logic_vector(1 downto 0); -- may need to make as two inputs of 2- bits each
   stage:        in std_logic_vector(1 downto 0); 
   regsel:       out std_logic_vector(7 downto 0)
   );
@@ -49,13 +50,14 @@ end Register_Select;
 architecture Behavioral of Register_Select is
 --type operator is (zero, one, two, three);
 signal regsel_temp: std_logic_vector(7 downto 0); -- temp value to regsel
+signal operator:    std_logic_vector(3 downto 0);
 shared variable regsel_mux_2_mux: std_logic_vector(7 downto 0); -- output from one mux is input to next mux
 
 begin
-
-  process(op1op2)
+operator <= op1&op2;
+  process(operator)
     begin
-      case op1op2 is
+      case operator is
         when "0000"|"0001"|"0010"|"0011" =>
           regsel_mux_2_mux := ALU_out; -- load the signal between the MUXs with ALU output value
         when "0110" =>

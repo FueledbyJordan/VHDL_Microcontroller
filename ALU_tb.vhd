@@ -13,7 +13,7 @@ architectural BEHAVIORAL  of ALU_TB
     signal result : out STD_LOGIC_VECTOR(7 downto 0);
 
 begin
-    p0: entity work.ALU(BEV) port map (A=>A, B=>B, aluop=>aluop, result=>result);
+    p0: entity work.ALU(Arch) port map (A=>A, B=>B, aluop=>aluop, result=>result);
 
     process
         begin

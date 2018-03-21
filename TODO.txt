@@ -1,5 +1,5 @@
-Jordan M: Memory.vhdl ALU.vhd
+Jordan M: Memory.vhdl
 John H: Decode.vhdl
 Logan M: Register File 
-Roy H: Register Select, Destination, Address Select
+Roy H: Stage_Counter.vhdl 
 Mouvsreng: PC Load

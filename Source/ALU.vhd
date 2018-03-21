@@ -28,7 +28,7 @@ entity ALU is
         A : in STD_LOGIC_VECTOR(7 downto 0);
         B : in STD_LOGIC_VECTOR(7 downto 0);
         aluop : in STD_LOGIC_VECTOR(3 downto 0);
-        result : out STD_LOGIC_VECTOR(7 downto 0);
+        result : out STD_LOGIC_VECTOR(7 downto 0)
     );
 end entity;
 
@@ -45,24 +45,24 @@ architecture Arch of ALU is
     constant OP_ADD : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0010";
     constant OP_SUB : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0011";
 
-begin
+    --shared variable temp_result : STD_LOGIC_VECTOR(DATA_WIDTH - 1 downto 0) := ZERO;
 
-    shared variable temp_result : STD_LOGIC_VECTOR(DATA_WIDTH - 1 downto 0) := ZERO;
+begin
 
     process(A, B, aluop)
     begin
         case aluop is
             when OP_AND =>
-                temp_result := a and b;
+                result <= a and b;
             when OP_OR =>
-                temp_result := a or b;
+                result <= a or b;
             when OP_ADD =>
-                temp_result := STD_LOGIC_VECTOR(SIGNED(A) + SIGNED(B));
+                result <= STD_LOGIC_VECTOR(SIGNED(A) + SIGNED(B));
             when OP_SUB =>
-                temp_result := STD_LOGIC_VECTOR(SIGNED(A)-SIGNED(B));
+                result <= STD_LOGIC_VECTOR(SIGNED(A)-SIGNED(B));
             when OTHERS =>
-                temp_result := ZERO;
+                result <= ZERO;
         end case;
     end process;
-    result <= temp_result;
 end Arch;
+

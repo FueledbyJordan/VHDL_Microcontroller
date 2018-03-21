@@ -44,94 +44,25 @@ architecture Arch of ALU is
     constant OP_OR : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0001";
     constant OP_ADD : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0010";
     constant OP_SUB : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0011";
-    constant OP_LW : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0100";
-    constant OP_SW : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0101";
-    constant OP_MOV : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0110";
-    constant OP_NOP : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0111";
-    constant OP_JEQ : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "1000";
-    constant OP_JNE : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "1001";
-    constant OP_JGT : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "1010";
-    constant OP_JLT : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "1011";
-    constant OP_LWI : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "1100";
-    constant OP_SWI : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "1101";
-
-    shared variable temp_result : STD_LOGIC_VECTOR(DATA_WIDTH - 1 downto 0);
-    shared variable arith_result : STD_LOGIC_VECTOR(DATA_WIDTH + 1 downto 0);
-    shared variable logic_result : STD_LOGIC_VECTOR(DATA_WIDTH - 1 downto 0);
-    shared variable temp_zero : STD_LOGIC;
-    shared variable temp_negative : STD_LOGIC;
 
 begin
 
-    process(operand_one, operand_two, aluop)
+    shared variable temp_result : STD_LOGIC_VECTOR(DATA_WIDTH - 1 downto 0) := ZERO;
+
+    process(A, B, aluop)
     begin
         case aluop is
             when OP_AND =>
-                arith_result := ZERO;
-                logic_result := a and b;
+                temp_result := a and b;
             when OP_OR =>
-                arith_result := ZERO;
-                logic_result := a or b;
+                temp_result := a or b;
             when OP_ADD =>
-                arith_result := ZERO;
-                logic_result := ZERO;
+                temp_result := STD_LOGIC_VECTOR(SIGNED(A) + SIGNED(B));
             when OP_SUB =>
-                arith_result := ZERO;
-                logic_result := ZERO;
-            when OP_LW =>
-                arith_result := ZERO;
-                logic_result := ZERO;
-            when OP_SW =>
-                logic_result := ZERO;
-                arith_result := ZERO;
-            when OP_MOV =>
-                logic_result := ZERO;
-                arith_result := ZERO;
-            when OP_NOP =>
-                logic_result := ZERO;
-                arith_result := ZERO;
-            when OP_JEQ =>
-                if (a = ZERO) then
-                    -- PC = b
-                else
-                    logic_result := ZERO;
-                end if;
-                arith_result := ZERO;
-            when OP_JNE =>
-                if (a /= ZERO) then
-                    -- PC = b
-                else
-                    logic_result := ZERO;
-                end if;
-                arith_result := ZERO;
-            when OP_JGT =>
-                if (a > ZERO) then
-                    -- PC = b
-                else
-                    logic_result := ZERO;
-                end if;
-                arith_result := ZERO;
-            when OP_JLT =>
-                if (a < ZERO) then
-                    -- PC = b
-                else
-                    logic_result := ZERO;
-                end if;
-                arith_result := ZERO;
-            when OP_LWI =>
-                -- a = Mem(b)
-                logic_result := ZERO;
-                arith_result := ZERO;
-            when OP_SWI =>
-                -- Mem(a) = a
-                logic_result := ZERO;
-                arith_result := ZERO;
+                temp_result := STD_LOGIC_VECTOR(SIGNED(A)-SIGNED(B));
             when OTHERS =>
-            
+                temp_result := ZERO;
         end case;
-
-        temp_result <= logic_result or arith_result;
-        result <= temp_result;
-            
     end process;
+    result <= temp_result;
 end Arch;

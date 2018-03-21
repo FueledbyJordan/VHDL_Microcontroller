@@ -34,22 +34,23 @@ use IEEE.NUMERIC_STD.ALL;
 entity Mem_TB is
 end Mem_TB;
 
-architecture RTL of Mem_TB is
+architecture BEV of Mem_TB is
     signal address : STD_LOGIC_VECTOR(7 DOWNTO 0);
     signal dataout : STD_LOGIC_VECTOR(7 DOWNTO 0);
     signal datain : STD_LOGIC_VECTOR(7 DOWNTO 0);
     signal readwrite : STD_LOGIC;
     signal clk : STD_LOGIC;
-    --signal rst : STD_LOGIC;
+    signal rst : STD_LOGIC;
     constant T : TIME := 100 ns;
 begin
-    p0: entity work.Memory(RTL) port map(address=>address, dataout=>dataout, datain=>datain, we=>readwrite, clock=>clk);
+    p0: entity work.Memory(BEV) port map(address=>address, dataout=>dataout, datain=>datain, readwrite=>readwrite, clk=>clk, rst=>rst);
 
     process
     begin
         wait for T/2;
         readwrite <= '0';
         clk <= '1';
+        rst <= '0';
         wait for T/2;
         clk <= '0';
         address <= STD_LOGIC_VECTOR(to_unsigned(12, address'length));
@@ -62,24 +63,49 @@ begin
         address <= STD_LOGIC_VECTOR(to_unsigned(12, address'length));
         readwrite <= '0';
         wait for T/2;
+        clk <= '1';     --should set Memory(12) = 204;
+        wait for T/2;
+        clk <= '0';
+        readwrite <= '1';
+        wait for T/2;
+        clk <= '1';     --should read 204 from Memory(12)
+        wait for T/2;
+        clk <= '0';
+        datain <= "00110011";
+        readwrite <= '0';
+        wait for T/2;
+        clk <= '1';     --should set Memory(12) = 51
+        wait for T/2;
+        clk <= '0';
+        readwrite <= '1';
+        wait for T/2;
+        clk <= '1';     --should read 51 from Memory(12)
+        wait for T/2;
+        clk <= '0';
+        wait for T/2;
+        readwrite <= '0';
+        clk <= '1';
+        rst <= '0';
+        wait for T/2;
+        clk <= '0';
+        address <= STD_LOGIC_VECTOR(to_unsigned(13, address'length));
+        readwrite <= '1';
+        datain <= "11110010";
+        wait for T/2;
         clk <= '1';
         wait for T/2;
         clk <= '0';
-        address <= STD_LOGIC_VECTOR(to_unsigned(11, address'length));
+        address <= STD_LOGIC_VECTOR(to_unsigned(13, address'length));
+        readwrite <= '0';
         wait for T/2;
-        clk <= '1';
-        wait for T/2;
-        clk <= '0';
-        wait for T/2;
-        clk <= '1';
+        clk <= '1';     --should set Memory(13) = 242;
         wait for T/2;
         clk <= '0';
+        readwrite <= '1';
         wait for T/2;
-        clk <= '1';
-        wait for T/2;
-        clk <= '0';
+        clk <= '1';     --should read 242 from Memory(12)
         wait;
     end process;
     
-end RTL;
+end BEV;
 

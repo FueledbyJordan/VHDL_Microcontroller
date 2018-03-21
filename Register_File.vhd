@@ -89,10 +89,10 @@ DbusMux : Mux_4_1 port map (in_0=>R0_out,in_1=>R1_out,in_2=>R2_out,in_3=>R3_out,
 SbusMux : Mux_4_1 port map (in_0=>R0_out,in_1=>R1_out,in_2=>R2_out,in_3=>R3_out,
             op=>sregsel,out_mux=>temp_sbus);
 
-Zero <= NOT(temp_sbus(0) OR temp_sbus(1) OR temp_sbus(2) OR temp_sbus(3) OR temp_sbus(4)
-        OR temp_sbus(5) OR temp_sbus(6) OR temp_sbus(7));
+Zero <= NOT(temp_dbus(0) OR temp_dbus(1) OR temp_dbus(2) OR temp_dbus(3) OR temp_dbus(4)
+        OR temp_dbus(5) OR temp_dbus(6) OR temp_dbus(7));
 
-Negative <= temp_sbus(7);
+Negative <= temp_dbus(7);
 
 dbus <= temp_dbus;
 sbus <= temp_sbus;

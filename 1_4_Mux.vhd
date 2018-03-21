@@ -48,12 +48,29 @@ begin
             case op is 
                 when "00" =>
                     out_0 <= Mux_in;
+                    out_1 <= '0';
+                    out_2 <= '0';
+                    out_3 <= '0';
                 when "01" =>
+                    out_0 <= '0';
                     out_1 <= Mux_in;
+                    out_2 <= '0';
+                    out_3 <= '0';
                 when "10" =>
+                    out_0 <= '0';
+                    out_1 <= '0';
                     out_2 <= Mux_in;
+                    out_3 <= '0';
                 when "11" =>
+                    out_0 <= '0';
+                    out_1 <= '0';
+                    out_2 <= '0';
                     out_3 <= Mux_in;
+                when others =>
+                    out_0 <= '0';
+                    out_1 <= '0';
+                    out_2 <= '0';
+                    out_3 <= '0';
             end case;
     end process;
 end Behavioral;

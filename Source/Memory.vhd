@@ -32,4 +32,4 @@ ARCHITECTURE BEV OF MEMORY IS
                 END IF;
             END IF;
         END PROCESS;
- END BEV;
+END BEV;

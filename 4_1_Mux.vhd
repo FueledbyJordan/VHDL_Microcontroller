@@ -55,7 +55,7 @@ begin
                 when "11" =>
                     out_mux <= in_3;
                 when others =>
-                    out_mux <= "UUUUUUUU";
+                    out_mux <= "00000000";
             end case;
 end process;
 

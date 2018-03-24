@@ -36,16 +36,16 @@ entity RegSel_tb is
 end RegSel_tb;
 
 architecture Behavioral of RegSel_tb is
-signal ALU, D, SourceReg, Immed, RegSel:      std_logic_vector(7 downto 0);
+signal ALU, D, SourceReg, Immed, RegSel:      std_logic_vector(1 downto 0);
 signal Stage, OP1, OP2:        std_logic_vector(1 downto 0); 
 
 begin
 p0: entity work.Register_Select(Behavioral) Port Map(ALU_out=>ALU, Datain=>D, Rs=>SourceReg, Immediate=>Immed, regsel=>RegSel, op1=>OP1, op2=>OP2, stage=>Stage);
 
-ALU         <= "00000000"; -- '0'
-D           <= "00001111"; -- "15"
-SourceReg   <= "11110000"; -- "240"
-Immed       <= "11111111"; -- "255"
+ALU         <= "00"; -- '0'
+D           <= "01"; -- "1"
+SourceReg   <= "10"; -- "2"
+Immed       <= "11"; -- "3"
 
 process
   begin

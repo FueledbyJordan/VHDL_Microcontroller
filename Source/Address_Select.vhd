@@ -37,16 +37,16 @@ entity Address_Select is
   op1:          in std_logic_vector(1 downto 0);
   op2:          in std_logic_vector(1 downto 0);
   stage:        in std_logic_vector(1 downto 0);
-  PC:           in std_logic_vector(7 downto 0);
-  Rs:           in std_logic_vector(7 downto 0);
-  Immediate:    in std_logic_vector(7 downto 0);
-  addrsel:       out std_logic_vector(7 downto 0)
+  PC:           in std_logic_vector(1 downto 0);
+  Rs:           in std_logic_vector(1 downto 0);
+  Immediate:    in std_logic_vector(1 downto 0);
+  addrsel:       out std_logic_vector(1 downto 0)
   );
 end Address_Select;
 
 architecture Behavioral of Address_Select is
 signal operator: std_logic_vector(3 downto 0);
-shared variable addrsel_mux_2_mux: std_logic_vector(7 downto 0);
+shared variable addrsel_mux_2_mux: std_logic_vector(1 downto 0);
 
 begin
 operator <= op1&op2;

@@ -36,22 +36,21 @@ use UNISIM.VComponents.all;
 
 entity Register_Select is
   Port ( 
-  ALU_out:      in std_logic_vector(7 downto 0);
-  Datain:       in std_logic_vector(7 downto 0);
-  Rs:           in std_logic_vector(7 downto 0);
-  Immediate:    in std_logic_vector(7 downto 0);
+  ALU_out:      in std_logic_vector(1 downto 0);
+  Datain:       in std_logic_vector(1 downto 0);
+  Rs:           in std_logic_vector(1 downto 0);
+  Immediate:    in std_logic_vector(1 downto 0);
   op1:          in std_logic_vector(1 downto 0);
   op2:          in std_logic_vector(1 downto 0); -- may need to make as two inputs of 2- bits each
   stage:        in std_logic_vector(1 downto 0); 
-  regsel:       out std_logic_vector(7 downto 0)
+  regsel:       out std_logic_vector(1 downto 0)
   );
 end Register_Select;
 
 architecture Behavioral of Register_Select is
 --type operator is (zero, one, two, three);
-signal regsel_temp: std_logic_vector(7 downto 0); -- temp value to regsel
 signal operator:    std_logic_vector(3 downto 0);
-shared variable regsel_mux_2_mux: std_logic_vector(7 downto 0); -- output from one mux is input to next mux
+shared variable regsel_mux_2_mux: std_logic_vector(1 downto 0); -- output from one mux is input to next mux
 
 begin
 operator <= op1&op2;

@@ -39,6 +39,7 @@ entity Address_Select is
   stage:        in std_logic_vector(1 downto 0);
   PC:           in std_logic_vector(1 downto 0);
   Rs:           in std_logic_vector(1 downto 0);
+  Rd:           in std_logic_vector(1 downto 0);
   Immediate:    in std_logic_vector(1 downto 0);
   addrsel:       out std_logic_vector(1 downto 0)
   );
@@ -46,30 +47,25 @@ end Address_Select;
 
 architecture Behavioral of Address_Select is
 signal operator: std_logic_vector(3 downto 0);
-shared variable addrsel_mux_2_mux: std_logic_vector(1 downto 0);
 
 begin
 operator <= op1&op2;
-  process(operator)
+  process(operator, stage)
     begin
-      case operator is
-        when "0100"|"0001" =>
-          addrsel_mux_2_mux := Rs; -- load the signal between the MUXs with Source Register value
-        when "1100"|"1101" =>
-          addrsel_mux_2_mux := Immediate; -- load the signal between the MUXs with Immediate value
-        when others =>
-          addrsel_mux_2_mux := PC;-- load the signal between the MUXs with PC value
-      end case;
+      if (stage = "10") then
+        case operator is
+              when "0100" =>
+                addrsel <= Rs; -- load the signal between the MUXs with Source Register value
+              when "0101" =>
+                addrsel <= Rd; -- load the signal between the MUXs with Destination Register value
+              when "1100"|"1101" =>
+                addrsel <= Immediate; -- load the signal between the MUXs with Immediate value
+              when others =>
+                addrsel <= PC;-- load the signal between the MUXs with PC value
+            end case;
+      else
+        addrsel <= PC;
+      end if;
     end process;  
-        
-  process(stage)
-    begin
-      case stage is
-        when "10" =>
-          addrsel <= addrsel_mux_2_mux; -- load the addrsel output to the signal between the MUXs
-        when others =>
-          addrsel <= PC;
-      end case;
-    end process;
 
 end Behavioral;

@@ -43,28 +43,21 @@ end Dest_Reg_Write;
 
 architecture Behavioral of Dest_Reg_Write is
 signal operator: std_logic_vector(3 downto 0);
-shared variable dwrite_mux_2_mux: std_logic; -- create signal between the two MUXs
 
 begin
 operator <= op1&op2;
-  process(operator)
+  process(operator, stage)
     begin
-      case operator is
-        when "0000"|"0001"|"0010"|"0011"|"0100"|"0110"|"1100"|"1110" => -- values from table
-          dwrite_mux_2_mux := '1'; -- set signal between MUXs to HIGH
-        when others =>
-          dwrite_mux_2_mux := '0'; -- set signal between MUXs to HIGH
-      end case;
-    end process;
-  
-  process(stage)
-    begin
-      case stage is
-        when "10" =>
-          dwrite <= dwrite_mux_2_mux; -- set the dwrite output to equal the signal (will be one clock-cycle delayed
-        when others =>
-          dwrite <='0';
-      end case;
+      if (stage = "10") then
+        case operator is
+          when "0000"|"0001"|"0010"|"0011"|"0100"|"0110"|"1100"|"1110" => -- values from table
+            dwrite <= '1'; -- set signal between MUXs to HIGH
+          when others =>
+            dwrite <= '0'; -- set signal between MUXs to HIGH
+        end case;
+      else
+        dwrite <= '0';
+      end if;
     end process;
 
 end Behavioral;

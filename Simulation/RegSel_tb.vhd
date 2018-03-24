@@ -42,10 +42,10 @@ signal Stage, OP1, OP2:        std_logic_vector(1 downto 0);
 begin
 p0: entity work.Register_Select(Behavioral) Port Map(ALU_out=>ALU, Datain=>D, Rs=>SourceReg, Immediate=>Immed, regsel=>RegSel, op1=>OP1, op2=>OP2, stage=>Stage);
 
-ALU         <= "00"; -- '0'
-D           <= "01"; -- "1"
-SourceReg   <= "10"; -- "2"
-Immed       <= "11"; -- "3"
+Immed       <= "00"; -- '0'
+SourceReg   <= "01"; -- "1"
+D           <= "10"; -- "2"
+ALU         <= "11"; -- "3"
 
 process
   begin

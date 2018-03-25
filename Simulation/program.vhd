@@ -41,7 +41,7 @@ architecture BEV of program is
     ISA(13) <= "11010100"; --SW R1, 0x40
     ISA(14) <= "01000000"; --Immediate Val
     ISA(15) <= "11111111"; --JMP inf
-    ISA(16) <= "00001111"; --Immediate Val
+    ISA(16) <= "00000000"; --Immediate Val
 
     p0 : entity work.Memory(BEV) port map(address=>address, dataout=>dataout, datain=>datain, readwrite=>readwrite, clk=>clk, rst=>rst);
 

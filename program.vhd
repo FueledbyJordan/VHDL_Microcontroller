@@ -7,7 +7,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity program is
 end program;
 
-architecture Arch of program is
+architecture BEV of program is
     constant T : TIME := 125 ns;
     constant MEM_WIDTH : INTEGER := 8;
     constant INSTRUCTION_POINTER : STD_LOGIC_VECTOR(MEM_WIDTH - 1 downto 0) := (others => '0');
@@ -56,28 +56,45 @@ architecture Arch of program is
         instr_loop : for i in 0 to NUM_INSTRUCTIONS - 1 loop
             datain <= ISA(i);
             clk <= '0';
-            address <= STD_LOGIC_VECTOR(to_unsigned(CONV_INTEGER(INSTRUCTION_POINTER) + i, address'length));
+            address <= STD_LOGIC_VECTOR(to_unsigned((CONV_INTEGER(INSTRUCTION_POINTER) + i), address'length));
             wait for T/2;
             clk <= '1';
             wait for T/2;
         end loop instr_loop;
         
         clk <= '0';
-        datain <= "00000000";
+        readwrite <= '1';
         --end load ISA into memory
         
-        readwrite <= '1';
-
-        verif_loop : for i in 0 to NUM_INSTRUCTIONS - 1 loop
-            clk <= '0';
-            address <= STD_LOGIC_VECTOR(to_unsigned(CONV_INTEGER(INSTRUCTION_POINTER) + i, address'length));
+        wait for T/2;
+        clk <= '1';
+        wait for T/2;
+        clk <= '0';
+        
+        verif_loop : for j in 0 to NUM_INSTRUCTIONS - 1 loop
+            address <= STD_LOGIC_VECTOR(to_unsigned((CONV_INTEGER(INSTRUCTION_POINTER) + j), address'length));
             wait for T/2;
             clk <= '1';
             wait for T/2;
+            clk <= '0';
         end loop verif_loop;        
+
+        clk <= '0';
+        address <= "00000000";
+        wait for T/2;
+        clk <= '1';
+        address <= "00000000";
+        wait for T/2;
+        clk <= '1';
+        wait for T/2;
+        clk <= '0';
+        address <= "00000000";
+        wait for T/2;
+        clk <= '1';
 
         wait;
     end process;
     
 
-end Arch; 
+end BEV; 
+

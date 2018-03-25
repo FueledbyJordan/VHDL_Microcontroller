@@ -46,14 +46,14 @@ architecture Behavioral of PC is
     component PC_reg
         Port ( clk : in STD_LOGIC;
                enable : in STD_LOGIC;
-               PC_in : in STD_LOGIC_VECTOR (7 downto 0):="00000000";
+               PC_in : in STD_LOGIC_VECTOR (7 downto 0);
                PC_out : out STD_LOGIC_VECTOR (7 downto 0):="00000000");
     end component;
 
     component mux_2_1
-        Port ( in_0 : in STD_LOGIC_VECTOR (7 downto 0):= "00000000";
-               in_1 : in std_logic_vector (7 downto 0):= "00000000";
-               out_mux : out STD_LOGIC_vector (7 downto 0):="00000000";
+        Port ( in_0 : in STD_LOGIC_VECTOR (7 downto 0);
+               in_1 : in std_logic_vector (7 downto 0);
+               out_mux : out STD_LOGIC_vector (7 downto 0);
                op : in STD_LOGIC);
     end component;
     
@@ -68,9 +68,6 @@ architecture Behavioral of PC is
  signal mux_PC,temp_PC_out,PC_plus,temp_address : std_logic_vector (7 downto 0);
  
 begin
-temp_PC_out <= "00000000";
-mux_PC <= "00000000";
-PC_plus <= "00000000";
 PC_mux : mux_2_1
     port map (in_0=>Immed_in,in_1=>PC_plus,out_mux=>mux_PC,op=>pcsel);
 REGPC : PC_reg

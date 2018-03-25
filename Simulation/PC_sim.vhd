@@ -59,7 +59,7 @@ PC1: entity work.PC(Behavioral)
 
 process
     begin
-        Immed_in <= "0000100";
+        Immed_in <= "00001000";
         sbus <= "00000100";
         dbus <= "00000010";
         addrsel <= "00";

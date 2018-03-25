@@ -35,13 +35,12 @@ entity PC_reg is
     Port ( clk : in STD_LOGIC;
            enable : in STD_LOGIC;
            PC_in : in STD_LOGIC_VECTOR (7 downto 0);
-           PC_out : out STD_LOGIC_VECTOR (7 downto 0));
+           PC_out : out STD_LOGIC_VECTOR (7 downto 0):="00000000");
 end PC_reg;
 
 architecture Behavioral of PC_reg is
 
 begin
-    PC_out <= "00000000";
     process(clk,enable)
         begin
             if (clk'event and clk = '1' and enable ='1') then

@@ -63,11 +63,11 @@ process
         sbus <= "00000100";
         dbus <= "00000010";
         addrsel <= "00";
-        pcsel <= '0';
+        pcsel <= '1';
         pcload <='1';
         wait for 100ns;
         wait for 100ns;
-        pcsel <= '1';
+        pcsel <= '0';
         wait for 100ns;
         wait for 100ns;
         pcload <='0';
@@ -76,8 +76,6 @@ process
         addrsel <= "10";
         wait for 100ns;
         addrsel <= "11";
-        wait for 100ns;
-        
-        
+        wait for 100ns;       
 end process;        
 end Behavioral;

@@ -57,5 +57,7 @@ process
         wait for 50ns;
         op <= "11";
         wait for 50ns;
+        Mux_in <='0';
+        wait for 50ns;
 end process;
 end Behavioral;

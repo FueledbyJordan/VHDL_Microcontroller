@@ -57,6 +57,6 @@ begin
                 when others =>
                     out_mux <= "00000000";
             end case;
-end process;
+    end process;
 
 end Behavioral;

@@ -37,7 +37,6 @@ end regi_test;
 
 architecture Behavioral of regi_test is
    signal clk : std_logic;
-   signal reset : std_logic;
    signal enable : std_logic;
    signal Reg_in : STD_LOGIC_VECTOR (7 downto 0);
    signal Reg_out : STD_LOGIC_VECTOR (7 downto 0);

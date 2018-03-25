@@ -61,24 +61,34 @@ RF : entity work.Register_File(Behavioral)
     end process;
     
     process
-        begin
-        
+        begin        
         dwrite <= '1';
         dval <= "00000001";
         dregsel <= "00";
         sregsel <= "01";
         wait for 100ns;
-        dwrite <= '0';
         dval <= "00000010";
-        dregsel <= "00";
+        dregsel <= "01";
         wait for 100ns;
-        dwrite <= '1';
         dval <= "00000011";
-        dregsel <= "00";
+        dregsel <= "10";
         sregsel <= "01";
         wait for 100ns;
---        dval <= "00000100";
---        dregsel <= "11";
---        wait for 100ns;        
+        dval <= "00000100";
+        dregsel <= "11";
+        wait for 100ns;
+        dwrite <= '0'; 
+        dregsel <= "00";
+        dval <= "00000101";
+        sregsel <= "00";
+        wait for 100ns;
+        sregsel <= "01";
+        wait for 100ns;
+        sregsel <= "10";
+        wait for 100ns;
+        sregsel <= "11";
+        wait for 100ns;
+        dwrite <= '1';
+        wait for 100ns;           
     end process;
 end Behavioral;

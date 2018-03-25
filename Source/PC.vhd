@@ -65,7 +65,8 @@ architecture Behavioral of PC is
                op : in std_logic_vector (1 downto 0);
                out_mux : out STD_LOGIC_VECTOR (7 downto 0)); 
     end component;
- signal mux_PC,temp_PC_out,PC_plus,temp_address : std_logic_vector (7 downto 0);
+
+signal mux_PC,temp_PC_out,PC_plus,temp_address : std_logic_vector (7 downto 0);
  
 begin
 PC_mux : mux_2_1

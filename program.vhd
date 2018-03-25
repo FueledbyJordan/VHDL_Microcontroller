@@ -45,14 +45,15 @@ architecture BEV of program is
 
     p0 : entity work.Memory(BEV) port map(address=>address, dataout=>dataout, datain=>datain, readwrite=>readwrite, clk=>clk, rst=>rst);
 
-    process --begin load ISA into memory, takes 2250 ns
+    process
     begin
-        
+
+        --begin load ISA into memory, takes 2250 ns
         clk <= '0';
         wait for T/2;
         clk <= '1';
         readwrite <= '0';
-        
+
         instr_loop : for i in 0 to NUM_INSTRUCTIONS - 1 loop
             datain <= ISA(i);
             clk <= '0';
@@ -61,16 +62,12 @@ architecture BEV of program is
             clk <= '1';
             wait for T/2;
         end loop instr_loop;
-        
+        --end load ISA into memory
+
         clk <= '0';
         readwrite <= '1';
-        --end load ISA into memory
-        
-        wait for T/2;
-        clk <= '1';
-        wait for T/2;
-        clk <= '0';
-        
+
+        --begin ISA load verif
         verif_loop : for j in 0 to NUM_INSTRUCTIONS - 1 loop
             address <= STD_LOGIC_VECTOR(to_unsigned((CONV_INTEGER(INSTRUCTION_POINTER) + j), address'length));
             wait for T/2;
@@ -79,22 +76,9 @@ architecture BEV of program is
             clk <= '0';
         end loop verif_loop;        
 
-        clk <= '0';
-        address <= "00000000";
-        wait for T/2;
-        clk <= '1';
-        address <= "00000000";
-        wait for T/2;
-        clk <= '1';
-        wait for T/2;
-        clk <= '0';
-        address <= "00000000";
-        wait for T/2;
-        clk <= '1';
-
         wait;
+        --end ISA load verif
+
     end process;
-    
 
 end BEV; 
-

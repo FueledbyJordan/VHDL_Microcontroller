@@ -26,7 +26,7 @@ architecture BEV of program is
     begin
     
     ISA(0) <= "11100100"; --LI R1, 0x00
-    ISA(1) <= "11111111"; --Immediate Val
+    ISA(1) <= "00000000"; --Immediate Val
     ISA(2) <= "11100000"; --LI R0, 0x80
     ISA(3) <= "10000000"; --Immediate Val
     ISA(4) <= "01001000"; --LW R2 (R0)

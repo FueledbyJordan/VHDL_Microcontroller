@@ -95,15 +95,25 @@ component PCL
 end component;
 
 --signal split declarations
-signal irbit4, irbit5, irbit6, irbit7 : std_logic;
-signal op1, op2 : std_logic_vector(1 downto 0);
-signal op1op2 : std_logic_vector(3 downto 0);
+signal irbit4, irbit5, irbit6, irbit7 : std_logic := '0';
+signal op1, op2 : std_logic_vector(1 downto 0) := (others => '0');
+signal op1op2 : std_logic_vector(3 downto 0) := (others => '0');
+
+--shared variables for logic within the process block
+shared variable irload_temp : std_logic := '0';
+shared variable imload_temp : std_logic := '0';
+shared variable readwrite_temp : std_logic := '0';
+shared variable pcsel_temp : std_logic := '0';
+shared variable irbit4_temp : std_logic := instruction(4);
+shared variable irbit5_temp : std_logic := instruction(5);
+shared variable irbit6_temp : std_logic := instruction(6);
+shared variable irbit7_temp : std_logic := instruction(7);
 
 --Options for addrsel/regsel
 constant PC : std_logic_vector(1 downto 0) := "00"; --addrsel PC option
 constant ALU_out : std_logic_vector(1 downto 0) := "11"; --regsel ALU option
 constant Datain : std_logic_vector(1 downto 0) := "10"; --regsel Datain option
-constant Immediate : std_logic_vector(1 downto 0) := "00"; --addrsel Immediate option
+constant Immediate : std_logic_vector(1 downto 0) := "01"; --addrsel Immediate option
 constant Rd : std_logic_vector(1 downto 0) := "11"; --addrsel destination reg option
 constant Rs : std_logic_vector(1 downto 0) := "01"; --addrsel source reg option
 
@@ -124,53 +134,51 @@ begin
     aluop <= op2; 
     
     --instantiate Address_Select, Dest_Reg_Write, Register_Select, and pcload
-    Addr_Sel : Address_Select port map(op1=>op1,op2=>op2,stage=>stage,PC=>PC,Rs=>Rs,Rd=>Rd,Immediate=>Immediate,addrsel=>addrsel);
+    Addr_Sel : Address_Select port map(op1=>op1,op2=>op2,stage=>stage,PC=>PC,Rs=>Datain,Rd=>Rd,Immediate=>Immediate,addrsel=>addrsel);
     Dest_Write : Dest_Reg_Write port map(op1=>op1,op2=>op2,stage=>stage,dwrite=>dwrite);
-    Reg_Sel : Register_Select port map(ALU_out=>ALU_out,Datain=>Datain,Rs=>instruction(1 downto 0),Immediate=>Immediate,op1=>op1,op2=>op2,stage=>stage,regsel=>regsel);
+    Reg_Sel : Register_Select port map(ALU_out=>ALU_out,Datain=>Datain,Rs=>Rs,Immediate=>PC,op1=>op1,op2=>op2,stage=>stage,regsel=>regsel);
     PC_Load : PCL port map(zero=>zero,negative=>negative,irbit=>instruction,op2=>op2,stage=>stage,pcload=>pcload);
-    
-    process(stage)
+        
+    process(stage,instruction)
     begin
+        irbit4_temp := irbit4;
+        irbit5_temp := irbit5;
+        irbit6_temp := irbit6;
+        irbit7_temp := irbit7;
         --Handle simple control lines based on stage     
-        case stage is
+        if stage = "00" then
             --stage 0 decoding
-            when "00" =>
-                pcsel <= '1';
-                --pcload <= '1'; --remove
-                irload <= '1';
-                imload <= '0';
-                readwrite <= '0';
+            pcsel_temp := '1';
+            irload_temp := '1';
+            imload_temp := '0';
+            readwrite_temp := '0';
+        elsif stage = "01" then
             --stage 1 decoding
-            when "01" =>
-                if irbit7 = '0' then
-                    --pcload <= '0'; --remove
-                    irload <= '0';
-                    imload <= '0';
-                    readwrite <= '0';
-                elsif irbit7 = '1' then
-                    pcsel <= '1';
-                    --pcload <= '1'; --remove
-                    irload <= '0';
-                    imload <= '1';
-                    readwrite <= '0';
-                end if;
+            if instruction(7) = '1' then
+                pcsel_temp := '1';
+                irload_temp := '0';
+                imload_temp := '1';
+                readwrite_temp := '0';
+            elsif instruction(7) = '0' then
+                pcsel_temp := '0';
+                irload_temp := '0';
+                imload_temp := '0';
+                readwrite_temp := '0';
+            end if;
             --stage 2 decoding
-            when "10" =>
-                pcsel <= '0';
-                --pcload <= '0'; --set to jump logic sometimes; remove
-                irload <= '0';
-                imload <= '0';
-                if irbit6 = '1' and irbit5 = '0' and irbit4 = '1' then
-                    readwrite <= '1';
-                else
-                    readwrite <= '0';
-                end if;
-            when others =>
-                pcsel <= '0';
-                --pcload <= '1'; --remove
-                irload <= '0';
-                imload <= '0';
-                readwrite <= '0';
-            end case;
+        elsif stage = "10" then
+            pcsel_temp := '0';
+            irload_temp := '0';
+            imload_temp := '0';
+            if instruction(6) = '1' and instruction(5) = '0' and instruction(4) = '1' then
+                readwrite_temp := '1';
+            else
+                readwrite_temp := '0';
+            end if;
+        end if;
+        pcsel <= pcsel_temp;
+        irload <= irload_temp;
+        imload <= imload_temp;
+        readwrite <= readwrite_temp;
         end process;
 end Behavioral;

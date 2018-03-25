@@ -15,7 +15,7 @@ LIBRARY IEEE;
     ARCHITECTURE BEV OF MEMORY IS
         TYPE MEM_2048 IS ARRAY (255 DOWNTO 0) OF STD_LOGIC_VECTOR(7 DOWNTO 0);
         SIGNAL MEMORY : MEM_2048 := (OTHERS => "00000000");
-        VARIABLE ADDR : INTEGER RANGE 0 TO 255;
+        SHARED VARIABLE ADDR : INTEGER RANGE 0 TO 255;
         BEGIN
             PROCESS(ADDRESS, DATAIN, readwrite, clk, rst)
             BEGIN
@@ -26,10 +26,10 @@ LIBRARY IEEE;
                         ADDR:=CONV_INTEGER(ADDRESS);
                         IF(readwrite='0')THEN
                             MEMORY(ADDR)<=datain;
+                        ELSE
+                            dataout<=MEMORY(ADDR);
                         END IF;
                     END IF;
                 END IF;
             END PROCESS;
-            dataout<=MEMORY(ADDR);
      END BEV;
-

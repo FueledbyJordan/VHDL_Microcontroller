@@ -25,7 +25,7 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity Decode_Logic is
     port(
-        instruction: in std_logic_vector(7 downto 0); --instruction input from IR
+        instruction : in std_logic_vector(7 downto 0); --instruction input from IR
         zero : in std_logic; --zero line from Register File; pass to pcload
         negative : in std_logic; --negative from Register File; pass to pcload
         stage : in std_logic_vector(1 downto 0); --input from the stage counter
@@ -87,10 +87,7 @@ component PCL
     port(
         zero: in std_logic;
         negative : in std_logic;
-        irbit4 : in std_logic;
-        irbit5 : in std_logic;
-        irbit6 : in std_logic;
-        irbit7 : in std_logic;
+        irbit : in std_logic_vector(7 downto 0);
         op2 : in std_logic_vector(1 downto 0);
         stage : in std_logic_vector(1 downto 0);
         pcload : out std_logic
@@ -130,7 +127,7 @@ begin
     Addr_Sel : Address_Select port map(op1=>op1,op2=>op2,stage=>stage,PC=>PC,Rs=>Rs,Rd=>Rd,Immediate=>Immediate,addrsel=>addrsel);
     Dest_Write : Dest_Reg_Write port map(op1=>op1,op2=>op2,stage=>stage,dwrite=>dwrite);
     Reg_Sel : Register_Select port map(ALU_out=>ALU_out,Datain=>Datain,Rs=>instruction(1 downto 0),Immediate=>Immediate,op1=>op1,op2=>op2,stage=>stage,regsel=>regsel);
-    PC_Load : PCL port map(zero=>zero,negative=>negative,irbit4=>irbit4,irbit5=>irbit5,irbit6=>irbit6,irbit7=>irbit7,op2=>op2,stage=>stage,pcload=>pcload);
+    PC_Load : PCL port map(zero=>zero,negative=>negative,irbit=>instruction,op2=>op2,stage=>stage,pcload=>pcload);
     
     process(stage)
     begin
@@ -152,7 +149,7 @@ begin
                     readwrite <= '0';
                 elsif irbit7 = '1' then
                     pcsel <= '1';
-                    pcload <= '1'; --remove
+                    --pcload <= '1'; --remove
                     irload <= '0';
                     imload <= '1';
                     readwrite <= '0';
@@ -167,7 +164,13 @@ begin
                     readwrite <= '1';
                 else
                     readwrite <= '0';
-                end if;      
+                end if;
+            when others =>
+                pcsel <= '0';
+                --pcload <= '1'; --remove
+                irload <= '0';
+                imload <= '0';
+                readwrite <= '0';
             end case;
         end process;
 end Behavioral;

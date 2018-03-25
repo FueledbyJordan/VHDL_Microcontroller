@@ -16,17 +16,17 @@ architecture Arch of program is
 
 
     signal ISA : INSTRUCTIONS;
-    signal address : STD_LOGIC_VECTOR(MEM_WIDTH - 1 downto 0) := (others=>'0');
-    signal dataout : STD_LOGIC_VECTOR(MEM_WIDTH - 1 downto 0);
-    signal datain : STD_LOGIC_VECTOR(MEM_WIDTH - 1 downto 0) := (others=>'0');
+    signal address : STD_LOGIC_VECTOR(MEM_WIDTH - 1 downto 0);-- := (others=>'0');
+    signal dataout : STD_LOGIC_VECTOR(MEM_WIDTH - 1 downto 0) := (others=>'0');
+    signal datain : STD_LOGIC_VECTOR(MEM_WIDTH - 1 downto 0);
     signal readwrite : STD_LOGIC;
-    signal clk : STD_LOGIC;
-    signal rst : STD_LOGIC;
+    signal clk : STD_LOGIC := '0';
+    signal rst : STD_LOGIC := '0';
     
     begin
     
     ISA(0) <= "11100100"; --LI R1, 0x00
-    ISA(1) <= "00000000"; --Immediate Val
+    ISA(1) <= "11111111"; --Immediate Val
     ISA(2) <= "11100000"; --LI R0, 0x80
     ISA(3) <= "10000000"; --Immediate Val
     ISA(4) <= "01001000"; --LW R2 (R0)
@@ -47,13 +47,15 @@ architecture Arch of program is
 
     process --begin load ISA into memory, takes 2250 ns
     begin
+        
         clk <= '0';
+        wait for T/2;
+        clk <= '1';
         readwrite <= '0';
-        rst <= '0';
-
+        
         instr_loop : for i in 0 to NUM_INSTRUCTIONS - 1 loop
-            clk <= '0';
             datain <= ISA(i);
+            clk <= '0';
             address <= STD_LOGIC_VECTOR(to_unsigned(CONV_INTEGER(INSTRUCTION_POINTER) + i, address'length));
             wait for T/2;
             clk <= '1';
@@ -79,4 +81,3 @@ architecture Arch of program is
     
 
 end Arch; 
-

@@ -36,15 +36,16 @@ entity AddrSel_tb is
 end AddrSel_tb;
 
 architecture Behavioral of AddrSel_tb is
-signal ProgramCount, SourceReg, Immed, AddrSel: std_logic_vector(7 downto 0);
+signal ProgramCount, SourceReg, DestinationReg, Immed, AddrSel: std_logic_vector(1 downto 0);
 signal Stage, OP1, OP2: std_logic_vector(1 downto 0);
 
 begin
-p1: entity work.Address_Select(Behavioral) Port Map(PC=>ProgramCount, Rs=>SourceReg, Immediate=>Immed, addrsel=>AddrSel, op1=>OP1, op2=>OP2, stage=>Stage);
+p1: entity work.Address_Select(Behavioral) Port Map(PC=>ProgramCount, Rs=>SourceReg, Rd=>DestinationReg, Immediate=>Immed, addrsel=>AddrSel, op1=>OP1, op2=>OP2, stage=>Stage);
 
-ProgramCount<= "00000000"; -- '0'
-SourceReg   <= "00001111"; -- "15"
-Immed       <= "11111111"; -- "255"
+ProgramCount<= "00"; -- '0'
+Immed       <= "01"; -- "1"
+SourceReg   <= "10"; -- "2"
+DestinationReg   <= "11"; -- "3"
 
 process
   begin

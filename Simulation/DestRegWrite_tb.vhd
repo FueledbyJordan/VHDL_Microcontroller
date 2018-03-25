@@ -45,21 +45,21 @@ p2: entity work.Dest_Reg_Write(Behavioral) Port Map(dwrite=>DestRegWrite, op1=> 
 process
   begin
     wait for 100ns;
+    OP1 <= "00";
+    OP2 <= "00";
     Stage <= "00";
+    wait for 20ns;
     OP1 <= "00";
     OP2 <= "00";
-    wait for 20ns;
     Stage <= "01";
+    wait for 20ns;
     OP1 <= "00";
     OP2 <= "00";
-    wait for 20ns;
     Stage <= "10";
-    OP1 <= "00";
-    OP2 <= "00";
     wait for 20ns;
-    Stage <= "11";
     OP1 <= "00";
     OP2 <= "00";
+    Stage <= "11";
     wait for 100ns;
     OP1 <= "00";
     OP2 <= "00";

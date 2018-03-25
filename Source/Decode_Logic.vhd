@@ -26,11 +26,9 @@ use IEEE.NUMERIC_STD.ALL;
 entity Decode_Logic is
     port(
         instruction: in std_logic_vector(7 downto 0); --instruction input from IR
-        zero : in std_logic; --zero line from Register File
-        negative : in std_logic; --negative from Register file
-        stage : in std_logic_vector(1 downto 0); --input from the stage counter 
-        
-        --i needs theses
+        zero : in std_logic; --zero line from Register File; pass to pcload
+        negative : in std_logic; --negative from Register File; pass to pcload
+        stage : in std_logic_vector(1 downto 0); --input from the stage counter
         addrsel : out std_logic_vector(1 downto 0);
         irload : out std_logic;
         imload : out std_logic;
@@ -47,6 +45,7 @@ end entity;
 
 architecture Behavioral of Decode_Logic is
 
+--Address Select Decode Logic Block
 component Address_Select
     port(
         op1 : in std_logic_vector(1 downto 0);
@@ -60,6 +59,7 @@ component Address_Select
       );
 end component;
 
+--Destination Register Write Logic Block
 component Dest_Reg_Write
     port(
         op1 : in std_logic_vector(1 downto 0);
@@ -69,6 +69,7 @@ component Dest_Reg_Write
     );
 end component;
 
+--Register Select Logic Block
 component Register_Select
     port(
         ALU_out : in std_logic_vector(1 downto 0);
@@ -76,62 +77,82 @@ component Register_Select
         Rs : in std_logic_vector(1 downto 0);
         Immediate : in std_logic_vector(1 downto 0);
         op1 : in std_logic_vector(1 downto 0);
-        op2 : in std_logic_vector(1 downto 0); -- may need to make as two inputs of 2- bits each
+        op2 : in std_logic_vector(1 downto 0); 
         stage : in std_logic_vector(1 downto 0); 
         regsel : out std_logic_vector(1 downto 0)
     );
 end component;
 
---        --does i needs theses?
---        PC : in std_logic_vector(1 downto 0); --input from the PC
---        ALU_out : in std_logic_vector(1 downto 0);
---        Datain : in std_logic_vector(1 downto 0);
---        Immediate : in std_logic_vector(1 downto 0);
+component PCL
+    port(
+        zero: in std_logic;
+        negative : in std_logic;
+        irbit4 : in std_logic;
+        irbit5 : in std_logic;
+        irbit6 : in std_logic;
+        irbit7 : in std_logic;
+        op2 : in std_logic_vector(1 downto 0);
+        stage : in std_logic_vector(1 downto 0);
+        pcload : out std_logic
+    );
+end component;
 
+--signal split declarations
 signal irbit4, irbit5, irbit6, irbit7 : std_logic;
 signal op1, op2 : std_logic_vector(1 downto 0);
 signal op1op2 : std_logic_vector(3 downto 0);
 
-constant PC : std_logic_vector(1 downto 0) := "00";
-constant ALU_out : std_logic_vector(1 downto 0) := "11";
-constant Datain : std_logic_vector(1 downto 0) := "10";
-constant Immediate : std_logic_vector(1 downto 0) := "00";
-constant Rd : std_logic_vector(1 downto 0) := "11";
-constant Rs : std_logic_vector(1 downto 0) := "01";
+--Options for addrsel/regsel
+constant PC : std_logic_vector(1 downto 0) := "00"; --addrsel PC option
+constant ALU_out : std_logic_vector(1 downto 0) := "11"; --regsel ALU option
+constant Datain : std_logic_vector(1 downto 0) := "10"; --regsel Datain option
+constant Immediate : std_logic_vector(1 downto 0) := "00"; --addrsel Immediate option
+constant Rd : std_logic_vector(1 downto 0) := "11"; --addrsel destination reg option
+constant Rs : std_logic_vector(1 downto 0) := "01"; --addrsel source reg option
 
 begin
     --split IR into lines
-    irbit4 <= instruction(3);
-    irbit5 <= instruction(2);
-    irbit6 <= instruction(1);
-    irbit7 <= instruction(0);
+    irbit4 <= instruction(4);
+    irbit5 <= instruction(5);
+    irbit6 <= instruction(6);
+    irbit7 <= instruction(7);
+    --split into op codes
     op1op2 <= instruction(7 downto 4);
     op1 <= instruction(7 downto 6);
     op2 <= instruction(5 downto 4);
     
-    --direct wire 
+    --direct wire, not stage based 
     dregsel <= instruction(3 downto 2);
     sregsel <= instruction(1 downto 0);
     aluop <= op2; 
     
-    --instantiate Address_Select, Dest_Reg_Write, and Register_Select
+    --instantiate Address_Select, Dest_Reg_Write, Register_Select, and pcload
     Addr_Sel : Address_Select port map(op1=>op1,op2=>op2,stage=>stage,PC=>PC,Rs=>Rs,Rd=>Rd,Immediate=>Immediate,addrsel=>addrsel);
     Dest_Write : Dest_Reg_Write port map(op1=>op1,op2=>op2,stage=>stage,dwrite=>dwrite);
     Reg_Sel : Register_Select port map(ALU_out=>ALU_out,Datain=>Datain,Rs=>instruction(1 downto 0),Immediate=>Immediate,op1=>op1,op2=>op2,stage=>stage,regsel=>regsel);
+    PC_Load : PCL port map(zero=>zero,negative=>negative,irbit4=>irbit4,irbit5=>irbit5,irbit6=>irbit6,irbit7=>irbit7,op2=>op2,stage=>stage,pcload=>pcload);
     
     process(stage)
-    begin    
+    begin
+        --Handle simple control lines based on stage     
         case stage is
+            --stage 0 decoding
+            when "00" =>
+                pcsel <= '1';
+                --pcload <= '1'; --remove
+                irload <= '1';
+                imload <= '0';
+                readwrite <= '0';
             --stage 1 decoding
             when "01" =>
-                if op1(1) = '0' then
-                    pcload <= '0';
+                if irbit7 = '0' then
+                    --pcload <= '0'; --remove
                     irload <= '0';
                     imload <= '0';
                     readwrite <= '0';
-                elsif op1(1) = '1' then
+                elsif irbit7 = '1' then
                     pcsel <= '1';
-                    pcload <= '1';
+                    pcload <= '1'; --remove
                     irload <= '0';
                     imload <= '1';
                     readwrite <= '0';
@@ -139,7 +160,7 @@ begin
             --stage 2 decoding
             when "10" =>
                 pcsel <= '0';
-                --pcload <= '0'; --set to jump logic sometimes
+                --pcload <= '0'; --set to jump logic sometimes; remove
                 irload <= '0';
                 imload <= '0';
                 if irbit6 = '1' and irbit5 = '0' and irbit4 = '1' then

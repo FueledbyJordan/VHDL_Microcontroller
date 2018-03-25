@@ -36,7 +36,7 @@ entity bit_reg_8 is
            reset : in std_logic;
            enable : in std_logic;
            Reg_in : in STD_LOGIC_VECTOR (7 downto 0);
-           Reg_out : out STD_LOGIC_VECTOR (7 downto 0));
+           Reg_out : out STD_LOGIC_VECTOR (7 downto 0) := "00000000");
 end bit_reg_8;
 
 architecture Behavioral of bit_reg_8 is

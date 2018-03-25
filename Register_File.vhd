@@ -59,11 +59,13 @@ architecture Behavioral of Register_File is
                in_2 : in STD_LOGIC_VECTOR (7 downto 0);
                in_3 : in STD_LOGIC_VECTOR (7 downto 0);
                op : in std_logic_vector (1 downto 0);
-               out_mux : out STD_LOGIC_VECTOR (7 downto 0));
+               out_mux : out STD_LOGIC_VECTOR (7 downto 0);
+               clk : in std_logic);
     end component;
     
     component Mux_1_4
         Port ( Mux_in : in STD_LOGIC;
+               clk : in std_logic;
                op : in std_logic_vector(1 downto 0);
                out_0 : out STD_LOGIC;
                out_1 : out STD_LOGIC;
@@ -81,7 +83,7 @@ begin
 temp_dval <= dval;
 
 DMX1 : Mux_1_4 
-    port map (Mux_in=>dwrite,op=>dregsel,out_0=>R0_e,out_1=>R1_e,out_2=>R2_e,out_3=>R3_e);
+    port map (Mux_in=>dwrite,clk=>clk,op=>dregsel,out_0=>R0_e,out_1=>R1_e,out_2=>R2_e,out_3=>R3_e);
 
 REG0 : bit_reg_8 
     port map (clk=>clk,reset=>reset,enable=>R0_e,Reg_in=>temp_dval,Reg_out=>R0_out);
@@ -94,10 +96,10 @@ REG3 : bit_reg_8
 
 DbusMux : Mux_4_1 
     port map (in_0=>R0_out,in_1=>R1_out,in_2=>R2_out,in_3=>R3_out,
-            op=>dregsel,out_mux=>temp_dbus);
+            op=>dregsel,out_mux=>temp_dbus,clk=>clk);
 SbusMux : Mux_4_1 
     port map (in_0=>R0_out,in_1=>R1_out,in_2=>R2_out,in_3=>R3_out,
-            op=>sregsel,out_mux=>temp_sbus);
+            op=>sregsel,out_mux=>temp_sbus,clk=>clk);
 
 Zero <= NOT(temp_dbus(0) OR temp_dbus(1) OR temp_dbus(2) OR temp_dbus(3) OR temp_dbus(4)
         OR temp_dbus(5) OR temp_dbus(6) OR temp_dbus(7));

@@ -33,6 +33,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity Mux_1_4 is
     Port ( Mux_in : in STD_LOGIC;
+           clk : in std_logic;
            op : in std_logic_vector(1 downto 0);
            out_0 : out STD_LOGIC;
            out_1 : out STD_LOGIC;
@@ -43,8 +44,8 @@ end Mux_1_4;
 architecture Behavioral of Mux_1_4 is
 
 begin
-    process(op)
-        begin    
+    process(Mux_in,op)
+        begin  
             case op is 
                 when "00" =>
                     out_0 <= Mux_in;

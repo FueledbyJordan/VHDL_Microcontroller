@@ -37,13 +37,14 @@ entity Mux_4_1 is
            in_2 : in STD_LOGIC_VECTOR (7 downto 0);
            in_3 : in STD_LOGIC_VECTOR (7 downto 0);
            op : in std_logic_vector (1 downto 0);
-           out_mux : out STD_LOGIC_VECTOR (7 downto 0));
+           out_mux : out STD_LOGIC_VECTOR (7 downto 0);
+           clk: in std_logic);
 end Mux_4_1;
 
 architecture Behavioral of Mux_4_1 is
 
 begin
-    process(op)
+    process(in_0,in_1,in_2,in_3)
         begin
             case op is
                 when "00" =>

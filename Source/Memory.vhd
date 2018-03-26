@@ -17,6 +17,24 @@ ARCHITECTURE BEV OF MEMORY IS
     SIGNAL MEMORY : MEM_2048 := (OTHERS => "00000000");
     SHARED VARIABLE ADDR : INTEGER RANGE 0 TO 255;
     BEGIN
+        MEMORY(0) <= "00000000"; --null pointer
+        MEMORY(1) <= "11100100"; --LI R1, 0x00
+        MEMORY(2) <= "00000000"; --Immediate Val
+        MEMORY(3) <= "11100000"; --LI R0, 0x80
+        MEMORY(4) <= "10000000"; --Immediate Val
+        MEMORY(5) <= "01001000"; --LW R2 (R0)
+        MEMORY(6) <= "10001000"; --JEQ R2 end
+        MEMORY(7) <= "00001110"; --Immediate Val
+        MEMORY(8) <= "00100110"; --ADD R1 (R2)
+        MEMORY(9) <= "11101100"; --LI R3, 0x01
+        MEMORY(10) <= "00000001"; --Immediate Val
+        MEMORY(11) <= "00100011"; --ADD R0 (R3)
+        MEMORY(12) <= "11111111"; --JMP loop
+        MEMORY(13) <= "00000101"; --Immmediate Val
+        MEMORY(14) <= "11010100"; --SW R1, 0x40
+        MEMORY(15) <= "01000000"; --Immediate Val
+        MEMORY(16) <= "11111111"; --JMP inf
+        MEMORY(17) <= "00010000"; --Immediate Val
         PROCESS(ADDRESS, DATAIN, readwrite, clk, rst)
         BEGIN
             IF(rising_edge(clk)) THEN
@@ -24,7 +42,7 @@ ARCHITECTURE BEV OF MEMORY IS
                     dataout <= "00000000";
                 ELSE
                     ADDR:=CONV_INTEGER(ADDRESS);
-                    IF(readwrite='0')THEN
+                    IF(readwrite='1')THEN
                         MEMORY(ADDR)<=datain;
                     ELSE
                         dataout<=MEMORY(ADDR);

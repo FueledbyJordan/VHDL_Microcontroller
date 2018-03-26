@@ -5,8 +5,9 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity Microcontroller is
     Port(
-        instruction : in std_logic_vector(7 downto 0);
+        --instruction : in std_logic_vector(7 downto 0);
         clk : in std_logic;
+        mcenable : in std_logic;
         sbus : out std_logic_vector(7 downto 0);
         dbus : out std_logic_vector(7 downto 0);
         aluout : out std_logic_vector(7 downto 0);
@@ -15,7 +16,9 @@ entity Microcontroller is
         negative : out std_logic;
         zero : out std_logic;
         pcsel : out std_logic;
-        pcload : out std_logic
+        pcload : out std_logic;
+        address : out std_logic_vector(7 downto 0);
+        dataout : out std_logic_vector(7 downto 0)
     );
 end entity;
 
@@ -69,7 +72,7 @@ component ALU is
     Port (
         A : in STD_LOGIC_VECTOR(7 downto 0);
         B : in STD_LOGIC_VECTOR(7 downto 0);
-        aluop : in STD_LOGIC_VECTOR(3 downto 0);
+        aluop : in STD_LOGIC_VECTOR(1 downto 0);
         result : out STD_LOGIC_VECTOR(7 downto 0)
     );
 end component;
@@ -101,8 +104,10 @@ end component;
 
 component Stage_Count is
   Port ( 
-  clk, rst: in std_logic;
-  stage:    out std_logic_vector(1 downto 0):= "00"
+    clk:    in std_logic;
+    rst:    in std_logic;
+    enable: in std_logic;
+    stage:  out std_logic_vector(1 downto 0):= "00"
   );
 end component;
 
@@ -151,7 +156,7 @@ ALUBlock: ALU port map(A=>dbusline,B=>sbusline,aluop=>aluopline,result=>aluoutbu
 IR_reg_block: IR_reg port map(IR_in=>datainbus,IR_out=>irline,clk=>clk,enable=>irloadline);
 Immed_reg_block: Immed_reg port map(Immed_in=>datainbus,Immed_out=>imline,clk=>clk,enable=>imloadline);
 MemoryBlock: MEMORY port map(address=>addressbus,dataout=>datainbus,datain=>dbusline,readwrite=>readwriteline,clk=>clk,rst=>reset);
-StageCounter: Stage_Count port map(clk=>clk,rst=>reset,stage=>stageline);
+StageCounter: Stage_Count port map(enable=>mcenable,clk=>clk,rst=>reset,stage=>stageline);
 MiddleMuxBlock: mux8 port map(a=>imline,b=>sbusline,c=>datainbus,d=>aluoutbus,s=>regselline,output=>middlemux);
         
 sbus<=sbusline;
@@ -163,5 +168,6 @@ negative<=nline;
 zero<=zline;
 pcsel<=pcselline;
 pcload<=pcloadline;
+address<=addressbus;
 
 end Behavioral;

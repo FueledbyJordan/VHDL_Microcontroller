@@ -33,8 +33,10 @@ use UNISIM.VComponents.all;
 
 entity Stage_Count is
   Port ( 
-  clk, rst: in std_logic;
-  stage:    out std_logic_vector(1 downto 0):= "00"
+  clk:    in std_logic;
+  rst:    in std_logic;
+  enable: in std_logic;
+  stage:  out std_logic_vector(1 downto 0):= "00"
   );
 end Stage_Count;
 
@@ -42,17 +44,19 @@ architecture Behavioral of Stage_Count is
 signal stage_next: std_logic_vector(1 downto 0) := "00";
 begin
 
-process(clk,rst)
+process(clk, rst, enable)
     begin
-        if (rst = '1') then
-            stage <= "00";
-            stage_next <= "00";
-        end if;
-        if (stage_next = "11") then
-            stage_next <= "00";
-        elsif (clk'event and clk = '1') then -- could also use "if rising_edge(clk) then ..."
-            stage <= stage_next;
-            stage_next <= std_logic_vector(unsigned(stage_next) + 1);
+        if (enable = '1') then
+            if (rst = '1') then
+                stage <= "00";
+                stage_next <= "00";
+            end if;
+            if (stage_next = "11") then
+                stage_next <= "00";
+            elsif (clk'event and clk = '1') then -- could also use "if rising_edge(clk) then ..."
+                stage <= stage_next;
+                stage_next <= std_logic_vector(unsigned(stage_next) + 1);
+            end if;
         end if;
     end process;
 

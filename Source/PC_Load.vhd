@@ -47,7 +47,7 @@ begin
                       s0 => stage(0),
                        y => pcload);
     m <= not zero;
-    n <= m and p;
+    n <= m and s;
     p <= q or r;
     q <= o and irbit(7) and (not irbit(6));
     r <= irbit(4) and irbit(5) and irbit(6) and irbit(7);

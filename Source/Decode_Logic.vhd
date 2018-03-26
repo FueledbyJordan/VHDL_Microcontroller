@@ -104,10 +104,10 @@ shared variable irload_temp : std_logic := '0';
 shared variable imload_temp : std_logic := '0';
 shared variable readwrite_temp : std_logic := '0';
 shared variable pcsel_temp : std_logic := '0';
-shared variable irbit4_temp : std_logic := instruction(4);
-shared variable irbit5_temp : std_logic := instruction(5);
-shared variable irbit6_temp : std_logic := instruction(6);
-shared variable irbit7_temp : std_logic := instruction(7);
+shared variable irbit4_temp : std_logic := '0';
+shared variable irbit5_temp : std_logic := '0';
+shared variable irbit6_temp : std_logic := '0';
+shared variable irbit7_temp : std_logic := '0';
 
 --Options for addrsel/regsel
 constant PC : std_logic_vector(1 downto 0) := "00"; --addrsel PC option

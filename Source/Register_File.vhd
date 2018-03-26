@@ -59,8 +59,8 @@ architecture Behavioral of Register_File is
                in_2 : in STD_LOGIC_VECTOR (7 downto 0);
                in_3 : in STD_LOGIC_VECTOR (7 downto 0);
                op : in std_logic_vector (1 downto 0);
-               out_mux : out STD_LOGIC_VECTOR (7 downto 0);
-               clk : in std_logic);
+               out_mux : out STD_LOGIC_VECTOR (7 downto 0)
+              );
     end component;
     
     component Mux_1_4
@@ -96,10 +96,10 @@ REG3 : bit_reg_8
 
 DbusMux : Mux_4_1 
     port map (in_0=>R0_out,in_1=>R1_out,in_2=>R2_out,in_3=>R3_out,
-            op=>dregsel,out_mux=>temp_dbus,clk=>clk);
+            op=>dregsel,out_mux=>temp_dbus);
 SbusMux : Mux_4_1 
     port map (in_0=>R0_out,in_1=>R1_out,in_2=>R2_out,in_3=>R3_out,
-            op=>sregsel,out_mux=>temp_sbus,clk=>clk);
+            op=>sregsel,out_mux=>temp_sbus);
 
 Zero <= NOT(temp_dbus(0) OR temp_dbus(1) OR temp_dbus(2) OR temp_dbus(3) OR temp_dbus(4)
         OR temp_dbus(5) OR temp_dbus(6) OR temp_dbus(7));

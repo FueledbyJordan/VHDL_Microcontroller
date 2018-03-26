@@ -27,7 +27,7 @@ entity ALU is
     Port (
         A : in STD_LOGIC_VECTOR(7 downto 0);
         B : in STD_LOGIC_VECTOR(7 downto 0);
-        aluop : in STD_LOGIC_VECTOR(3 downto 0);
+        aluop : in STD_LOGIC_VECTOR(1 downto 0);
         result : out STD_LOGIC_VECTOR(7 downto 0)
     );
 end entity;
@@ -36,14 +36,14 @@ end entity;
 
 architecture Arch of ALU is
     constant DATA_WIDTH : integer := 8;
-    constant OP_WIDTH : integer := 4;
+    constant OP_WIDTH : integer := 2;
     
     constant ZERO : STD_LOGIC_VECTOR(DATA_WIDTH - 1 downto 0) := "00000000";
 
-    constant OP_AND : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0000";
-    constant OP_OR : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0001";
-    constant OP_ADD : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0010";
-    constant OP_SUB : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "0011";
+    constant OP_AND : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "00";
+    constant OP_OR : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "01";
+    constant OP_ADD : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "10";
+    constant OP_SUB : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "11";
 
     --shared variable temp_result : STD_LOGIC_VECTOR(DATA_WIDTH - 1 downto 0) := ZERO;
 

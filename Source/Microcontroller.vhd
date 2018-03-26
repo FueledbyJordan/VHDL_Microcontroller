@@ -5,7 +5,6 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity Microcontroller is
     Port(
-        instruction : in std_logic_vector(7 downto 0);
         clk : in std_logic;
         sbus : out std_logic_vector(7 downto 0);
         dbus : out std_logic_vector(7 downto 0);
@@ -15,7 +14,10 @@ entity Microcontroller is
         negative : out std_logic;
         zero : out std_logic;
         pcsel : out std_logic;
-        pcload : out std_logic
+        stage : out std_logic_vector(1 downto 0);
+        pcload : out std_logic;
+        addressout : out std_logic_vector(7 downto 0);
+        irlineout : out std_logic_vector(7 downto 0)
     );
 end entity;
 
@@ -62,6 +64,7 @@ component PC is
            sbus : in std_logic_vector (7 downto 0 );
            dbus : in std_logic_vector (7 downto 0 );
            addrsel  : in std_logic_vector (1 downto 0);
+           stage : in std_logic_vector(1 downto 0);
            address : out STD_LOGIC_VECTOR (7 downto 0):="00000000");
 end component;
 
@@ -69,7 +72,7 @@ component ALU is
     Port (
         A : in STD_LOGIC_VECTOR(7 downto 0);
         B : in STD_LOGIC_VECTOR(7 downto 0);
-        aluop : in STD_LOGIC_VECTOR(3 downto 0);
+        aluop : in STD_LOGIC_VECTOR(1 downto 0);
         result : out STD_LOGIC_VECTOR(7 downto 0)
     );
 end component;
@@ -97,7 +100,7 @@ component MEMORY is
         clk : in std_logic := '0';
         rst : in std_logic := '0'
     );
-end component;
+END COMPONENT;
 
 component Stage_Count is
   Port ( 
@@ -146,7 +149,7 @@ begin
 
 Regs: Register_File port map(dwrite=>dwriteline,dval=>middlemux,sregsel=>sregselline,dregsel=>dregselline,sbus=>sbusline,dbus=>dbusline,Zero=>zline,Negative=>nline,clk=>clk,reset=>reset);
 Decode: Decode_Logic port map(instruction=>irline,zero=>zline,negative=>nline,stage=>stageline,addrsel=>addrselline,irload=>irloadline,imload=>imloadline,regsel=>regselline,dwrite=>dwriteline,aluop=>aluopline,readwrite=>readwriteline,pcsel=>pcselline,pcload=>pcloadline,sregsel=>sregselline,dregsel=>dregselline);
-PCBlock: PC port map(Immed_in=>imline,clk=>clk,pcsel=>pcselline,pcload=>pcloadline,sbus=>sbusline,dbus=>dbusline,addrsel=>addrselline,address=>addressbus);
+PCBlock: PC port map(Immed_in=>imline,clk=>clk,pcsel=>pcselline,pcload=>pcloadline,sbus=>sbusline,dbus=>dbusline,addrsel=>addrselline,address=>addressbus,stage=>stageline);
 ALUBlock: ALU port map(A=>dbusline,B=>sbusline,aluop=>aluopline,result=>aluoutbus);
 IR_reg_block: IR_reg port map(IR_in=>datainbus,IR_out=>irline,clk=>clk,enable=>irloadline);
 Immed_reg_block: Immed_reg port map(Immed_in=>datainbus,Immed_out=>imline,clk=>clk,enable=>imloadline);
@@ -163,5 +166,8 @@ negative<=nline;
 zero<=zline;
 pcsel<=pcselline;
 pcload<=pcloadline;
+stage<=stageline;
+addressout<=addressbus;
+irlineout<=datainbus;
 
 end Behavioral;

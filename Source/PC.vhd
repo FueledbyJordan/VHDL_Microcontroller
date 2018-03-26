@@ -39,6 +39,7 @@ entity PC is
            sbus : in std_logic_vector (7 downto 0 );
            dbus : in std_logic_vector (7 downto 0 );
            addrsel  : in std_logic_vector (1 downto 0);
+           stage : in std_logic_vector(1 downto 0);
            address : out STD_LOGIC_VECTOR (7 downto 0):="00000000");
 end PC;
 
@@ -66,6 +67,7 @@ architecture Behavioral of PC is
                out_mux : out STD_LOGIC_VECTOR (7 downto 0)); 
     end component;
  signal mux_PC,temp_PC_out,PC_plus,temp_address : std_logic_vector (7 downto 0);
+ shared variable plus : boolean := false;
  
 begin
 PC_mux : mux_2_1
@@ -75,7 +77,15 @@ REGPC : PC_reg
 AddrMUX : mux_4_1
     port map (in_0=>temp_PC_out,in_1=>Immed_in,in_2=>sbus,in_3=>dbus,
                 op=>addrsel,out_mux=>temp_address);
-                
-PC_plus <= std_logic_vector(unsigned(temp_PC_out) + "00000001");
+process(stage)
+    begin
+    if stage = "00" then
+        plus := true;
+    end if;
+    if plus then 
+        plus := false;               
+        PC_plus <= std_logic_vector(unsigned(temp_PC_out) + "00000001");
+    end if;   
+end process;
 address <= temp_address;
 end Behavioral;

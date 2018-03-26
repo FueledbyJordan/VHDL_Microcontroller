@@ -1,5 +1,3 @@
-PROCESS(ADDRESS, DATAIN, readwrite, clk, rst)
-        BEGIN
             IF(rising_edge(clk)) THEN
                 IF(rst='1') THEN
                     dataout <= "00000000";

@@ -124,7 +124,7 @@ def populate_memory():
         line = line.upper()
         addr, content = line.split(' ')
         content = content.replace("0X","")
-        sys.stdout.write("MEMORY(" + addr + ") <= \"" + binary(content) + "\";\n")
+        sys.stdout.write("MEMORY(" + addr + ") := \"" + binary(content) + "\";\n")
         sys.stdout.flush()
 
 def mem_file_writer_header():
@@ -149,21 +149,21 @@ for line in lines:
 lines.close()
 
 mem_file_writer_header()
-sys.stdout.write("MEMORY(0) <= \"00000000\";\n")
+sys.stdout.write("MEMORY(0) := \"00000000\";\n")
 
 i = 1
 
 for instruction in Instructions:
     sys.stdout.write("MEMORY(")
     sys.stdout.write(str(i))
-    sys.stdout.write(") <= \"")
+    sys.stdout.write(") := \"")
     sys.stdout.write(instruction + "\";\n")
     sys.stdout.flush()
     i = i + 1
 
 sys.stdout.write("MEMORY(")
 sys.stdout.write(str(i))
-sys.stdout.write(") <= \"")
+sys.stdout.write(") := \"")
 sys.stdout.write("00000000\";\n")
 
 populate_memory()

@@ -33,6 +33,9 @@ architecture BEV of program is
     signal zero : STD_LOGIC;
     signal pcsel : STD_LOGIC;
     signal pcload : STD_LOGIC;
+    signal dataout : std_logic_vector(7 downto 0);
+    signal stage : std_logic_vector (1 downto 0);
+    signal readwrite : std_logic;
 
     
     
@@ -58,7 +61,7 @@ architecture BEV of program is
 
     --p0 : entity work.Memory(BEV) port map(address=>address, dataout=>dataout, datain=>datain, readwrite=>readwrite, clk=>clk, rst=>rst);
 
-    p1 : entity work.Microcontroller port map(mcenable=>enable,address=>address, clk=>clk, sbus=>sbus, dbus=>dbus, aluout=>aluout, immed=>immed, aluop=>aluop, negative=>negative, zero=>zero, pcsel=>pcsel, pcload=>pcload);
+    p1 : entity work.Microcontroller port map(readwrite=>readwrite,stage=>stage,dataout=>dataout,mcenable=>enable,address=>address, clk=>clk, sbus=>sbus, dbus=>dbus, aluout=>aluout, immed=>immed, aluop=>aluop, negative=>negative, zero=>zero, pcsel=>pcsel, pcload=>pcload);
 
 
     process
@@ -80,16 +83,16 @@ architecture BEV of program is
 --        end loop instr_loop;
 
 --        clk <= '0';
---        readwrite <= '1';
+        --readwrite <= '0';
 --        --wait for 2500 ns;
        
-        enable <= '1';
+        enable <= '0';
         while true loop
-            clk <= '1';
-            wait for T/2;
             clk <= '0';
             wait for T/2;
-            -- enable <= '1';
+            clk <= '1';
+            wait for T/2;
+            enable <= '1';
         end loop;
         wait;
         --end load ISA into memory
@@ -102,6 +105,7 @@ architecture BEV of program is
 --            clk <= '1';
 --            wait for T/2;
 --            clk <= '0';
+
 --        end loop verif_loop;        
 
         --wait;

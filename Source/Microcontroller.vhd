@@ -18,7 +18,9 @@ entity Microcontroller is
         pcsel : out std_logic;
         pcload : out std_logic;
         address : out std_logic_vector(7 downto 0);
-        dataout : out std_logic_vector(7 downto 0)
+        dataout : out std_logic_vector(7 downto 0);
+        stage : out std_logic_vector (1 downto 0 );
+        readwrite : out std_logic
     );
 end entity;
 
@@ -169,5 +171,8 @@ zero<=zline;
 pcsel<=pcselline;
 pcload<=pcloadline;
 address<=addressbus;
+dataout<=datainbus;
+stage<=stageline;
+readwrite<= readwriteline;
 
 end Behavioral;

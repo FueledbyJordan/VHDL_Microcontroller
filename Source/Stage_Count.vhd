@@ -36,12 +36,12 @@ entity Stage_Count is
   clk:    in std_logic;
   rst:    in std_logic;
   enable: in std_logic;
-  stage:  out std_logic_vector(1 downto 0):= "00"
+  stage:  out std_logic_vector(1 downto 0):= "11"
   );
 end Stage_Count;
 
 architecture Behavioral of Stage_Count is
-signal stage_next: std_logic_vector(1 downto 0) := "00";
+signal stage_next: std_logic_vector(1 downto 0) := "11";
 begin
 
 process(clk, rst, enable)

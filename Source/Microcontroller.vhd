@@ -64,6 +64,7 @@ component PC is
            sbus : in std_logic_vector (7 downto 0 );
            dbus : in std_logic_vector (7 downto 0 );
            addrsel  : in std_logic_vector (1 downto 0);
+           stage : in std_logic_vector(1 downto 0);
            address : out STD_LOGIC_VECTOR (7 downto 0):="00000000");
 end component;
 
@@ -148,7 +149,7 @@ begin
 
 Regs: Register_File port map(dwrite=>dwriteline,dval=>middlemux,sregsel=>sregselline,dregsel=>dregselline,sbus=>sbusline,dbus=>dbusline,Zero=>zline,Negative=>nline,clk=>clk,reset=>reset);
 Decode: Decode_Logic port map(instruction=>irline,zero=>zline,negative=>nline,stage=>stageline,addrsel=>addrselline,irload=>irloadline,imload=>imloadline,regsel=>regselline,dwrite=>dwriteline,aluop=>aluopline,readwrite=>readwriteline,pcsel=>pcselline,pcload=>pcloadline,sregsel=>sregselline,dregsel=>dregselline);
-PCBlock: PC port map(Immed_in=>imline,clk=>clk,pcsel=>pcselline,pcload=>pcloadline,sbus=>sbusline,dbus=>dbusline,addrsel=>addrselline,address=>addressbus);
+PCBlock: PC port map(Immed_in=>imline,clk=>clk,pcsel=>pcselline,pcload=>pcloadline,sbus=>sbusline,dbus=>dbusline,addrsel=>addrselline,address=>addressbus,stage=>stageline);
 ALUBlock: ALU port map(A=>dbusline,B=>sbusline,aluop=>aluopline,result=>aluoutbus);
 IR_reg_block: IR_reg port map(IR_in=>datainbus,IR_out=>irline,clk=>clk,enable=>irloadline);
 Immed_reg_block: Immed_reg port map(Immed_in=>datainbus,Immed_out=>imline,clk=>clk,enable=>imloadline);

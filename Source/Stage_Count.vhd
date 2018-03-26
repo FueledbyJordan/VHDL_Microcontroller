@@ -33,26 +33,36 @@ use UNISIM.VComponents.all;
 
 entity Stage_Count is
   Port ( 
-  clk, rst: in std_logic;
-  stage:    out std_logic_vector(1 downto 0):= "00"
+  clk:    in std_logic;
+  rst:    in std_logic;
+  enable: in std_logic;
+  --irbit7: in std_logic;
+  stage:  out std_logic_vector(1 downto 0):= "11"
   );
 end Stage_Count;
 
 architecture Behavioral of Stage_Count is
-signal stage_next: std_logic_vector(1 downto 0) := "00";
+signal stage_next: std_logic_vector(1 downto 0) := "11";
+--shared variable flag : std_logic := '0';
 begin
 
-process(clk,rst)
+process(clk, rst, enable)
     begin
-        if (rst = '1') then
-            stage <= "00";
-            stage_next <= "00";
-        end if;
-        if (stage_next = "11") then
-            stage_next <= "00";
-        elsif (clk'event and clk = '1') then -- could also use "if rising_edge(clk) then ..."
-            stage <= stage_next;
-            stage_next <= std_logic_vector(unsigned(stage_next) + 1);
+        if (enable = '1') then
+            if (rst = '1') then
+                stage <= "00";
+                stage_next <= "00";
+            end if;
+            if (stage_next = "11") then
+                stage_next <= "00";
+            elsif (clk'event and clk = '1') then -- could also use "if rising_edge(clk) then ..."
+                stage <= stage_next;
+                stage_next <= std_logic_vector(unsigned(stage_next) + 1);
+--                if stage_next = "10" and irbit7 = '1' and flag = '1' then
+--                    flag := '0';
+--                    stage_next <= "01";  
+--                end if;
+            end if;
         end if;
     end process;
 

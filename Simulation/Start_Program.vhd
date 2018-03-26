@@ -44,10 +44,10 @@ component Microcontroller is
         negative : out std_logic;
         zero : out std_logic;
         pcsel : out std_logic;
-        stage : out std_logic_vector(1 downto 0);
-        pcload : out std_logic;
-        addressout : out std_logic_vector(7 downto 0);
-        irlineout : out std_logic_vector(7 downto 0)
+        --stage : out std_logic_vector(1 downto 0);
+        pcload : out std_logic
+        --addressout : out std_logic_vector(7 downto 0);
+        --irlineout : out std_logic_vector(7 downto 0)
     );
 end component;
 
@@ -61,23 +61,23 @@ signal negative : std_logic;
 signal zero : std_logic;
 signal pcsel : std_logic;
 signal pcload : std_logic;
-signal stage : std_logic_vector(1 downto 0);
-signal address : std_logic_vector(7 downto 0);
-signal irline : std_logic_vector(7 downto 0);
+--signal stage : std_logic_vector(1 downto 0);
+--signal address : std_logic_vector(7 downto 0);
+--signal irline : std_logic_vector(7 downto 0);
 
 
 begin
 
-p0: Microcontroller port map(clk=>clk,stage=>stage,sbus=>sbus,dbus=>dbus,aluout=>aluout,immed=>immed,aluop=>aluop,negative=>negative,zero=>zero,pcsel=>pcsel,pcload=>pcload,addressout=>address,irlineout=>irline);
+p0: Microcontroller port map(clk=>clk,sbus=>sbus,dbus=>dbus,aluout=>aluout,immed=>immed,aluop=>aluop,negative=>negative,zero=>zero,pcsel=>pcsel,pcload=>pcload);
 
     process
         begin
-            clk <= '0';
+            clk <= '1';
             wait for 100 ns;
             while true loop
-                clk <= '1';
-                wait for 67.5 ns;
                 clk <= '0';
+                wait for 67.5 ns;
+                clk <= '1';
                 wait for 67.5 ns;
             end loop;
             wait;

@@ -101,7 +101,8 @@ signal op1op2 : std_logic_vector(3 downto 0) := (others => '0');
 
 --shared variables for logic within the process block
 shared variable irload_temp : std_logic := '0';
-shared variable imload_temp : std_logic := '0';
+--shared variable imload_temp : std_logic := '0';
+signal imload_temp : std_logic := '0';
 shared variable readwrite_temp : std_logic := '0';
 shared variable pcsel_temp : std_logic := '0';
 shared variable irbit4_temp : std_logic := instruction(4);
@@ -139,7 +140,7 @@ begin
     Reg_Sel : Register_Select port map(ALU_out=>ALU_out,Datain=>Datain,Rs=>Rs,Immediate=>PC,op1=>op1,op2=>op2,stage=>stage,regsel=>regsel);
     PC_Load : PCL port map(zero=>zero,negative=>negative,irbit=>instruction,op2=>op2,stage=>stage,pcload=>pcload);
         
-    process(stage)
+    process(stage,instruction)
     begin
         irbit4_temp := irbit4;
         irbit5_temp := irbit5;
@@ -150,26 +151,26 @@ begin
             --stage 0 decoding
             pcsel_temp := '1';
             irload_temp := '1';
-            imload_temp := '0';
+            imload_temp <= '0';
             readwrite_temp := '0';
         elsif stage = "01" then
             --stage 1 decoding
             if instruction(7) = '1' then
                 pcsel_temp := '1';
                 irload_temp := '0';
-                imload_temp := '1';
+                imload_temp <= '1';
                 readwrite_temp := '0';
             elsif instruction(7) = '0' then
                 pcsel_temp := '0';
                 irload_temp := '0';
-                imload_temp := '0';
+                imload_temp <= '0';
                 readwrite_temp := '0';
             end if;
             --stage 2 decoding
         elsif stage = "10" then
             pcsel_temp := '0';
             irload_temp := '0';
-            imload_temp := '0';
+            imload_temp <= '0';
             if instruction(6) = '1' and instruction(5) = '0' and instruction(4) = '1' then
                 readwrite_temp := '1';
             else
@@ -179,6 +180,11 @@ begin
         pcsel <= pcsel_temp;
         irload <= irload_temp;
         imload <= imload_temp;
+--        if stage = "01" then
+--            imload <= imload_temp1;
+--        else
+--            imload <= imload_temp2;
+--        end if;
         readwrite <= readwrite_temp;
         end process;
 end Behavioral;

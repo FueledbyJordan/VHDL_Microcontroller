@@ -117,6 +117,16 @@ def instruction_to_binary(instruction):
         immed = immed.replace("0X","")
         Instructions.append(binary(immed))
 
+def populate_memory():
+    lines = open('.src/Nums_To_Add.txt')
+    for line in lines:
+        line = line.strip()
+        line = line.upper()
+        addr, content = line.split(' ')
+        content = content.replace("0X","")
+        sys.stdout.write("MEMORY(" + addr + ") <= \"" + binary(content) + "\";\n")
+        sys.stdout.flush()
+
 def mem_file_writer_header():
     header_lines = open('.src/mem_file_header.vhd')
     for line in header_lines:
@@ -155,5 +165,7 @@ sys.stdout.write("MEMORY(")
 sys.stdout.write(str(i))
 sys.stdout.write(") <= \"")
 sys.stdout.write("00000000\";\n")
+
+populate_memory()
 
 mem_file_writer_footer()

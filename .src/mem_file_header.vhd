@@ -6,7 +6,7 @@ ENTITY MEMORY IS
         address : IN STD_LOGIC_VECTOR(7 DOWNTO 0) := "00000000";
         dataout : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) := "00000000";
         datain : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
-        readwrite : IN STD_LOGIC;-- := '0';   --read is 1, write is 0
+        readwrite : IN STD_LOGIC;-- := '0';   --read is 0, write is 1
         clk : in STD_LOGIC := '0';
         rst : in STD_LOGIC := '0'
     );

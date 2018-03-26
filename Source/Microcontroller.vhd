@@ -15,11 +15,7 @@ entity Microcontroller is
         negative : out std_logic;
         zero : out std_logic;
         pcsel : out std_logic;
-        pcload : out std_logic;
-        r0 : out std_logic_vector(7 downto 0);
-        r1 : out std_logic_vector(7 downto 0);
-        r2 : out std_logic_vector(7 downto 0);
-        r3 : out std_logic_vector(7 downto 0)
+        pcload : out std_logic
     );
 end entity;
 
@@ -92,14 +88,14 @@ component Immed_reg is
            enable : in STD_LOGIC);
 end component;
 
-COMPONENT MEMORY IS
-    PORT(
-        address : IN STD_LOGIC_VECTOR(7 DOWNTO 0) := "00000000";
-        dataout : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) := "00000000";
-        datain : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
-        readwrite : IN STD_LOGIC;-- := '0';   --read is 1, write is 0
-        clk : in STD_LOGIC := '0';
-        rst : in STD_LOGIC := '0'
+component MEMORY is
+    port(
+        address : in std_logic_vector(7 downto 0) := "00000000";
+        dataout : out std_logic_vector(7 downto 0) := "00000000";
+        datain : in std_logic_vector(7 downto 0);
+        readwrite : in std_logic;-- := '0';   --read is 1, write is 0
+        clk : in std_logic := '0';
+        rst : in std_logic := '0'
     );
 END COMPONENT;
 
@@ -110,42 +106,62 @@ component Stage_Count is
   );
 end component;
 
---Register bus
-signal r0bus : std_logic_vector(7 downto 0);
-signal r1bus : std_logic_vector(7 downto 0);
-signal r2bus : std_logic_vector(7 downto 0);
-signal r3bus : std_logic_vector(7 downto 0); 
+component mux8 is
+    Port ( a: in  STD_LOGIC_VECTOR(7 downto 0);
+           b: in  STD_LOGIC_VECTOR(7 downto 0);
+           c: in  STD_LOGIC_VECTOR(7 downto 0);
+           d: in  STD_LOGIC_VECTOR(7 downto 0);
+           s: in  STD_LOGIC_VECTOR(1 downto 0);
+      output: out STD_LOGIC_VECTOR(7 downto 0));
+end component;
+
 --ALU bus
-signal aluoutbus : std_logic_vector(7 downto 0);
+signal aluoutbus : std_logic_vector(7 downto 0); --output of ALU
 --Register Data bus
-signal sbusline : std_logic_vector(7 downto 0);
-signal dbusline : std_logic_vector(7 downto 0);
-signal addressbus : std_logic_vector(7 downto 0);
-signal datainbus : std_logic_vector(7 downto 0);
-signal pcoutbus : std_logic_vector(7 downto 0);
-signal middlemux : std_logic_vector(7 downto 0);
-signal zline : std_logic;
-signal nline : std_logic;
-signal reset : std_logic;
-signal irline : std_logic_vector(7 downto 0);
+signal sbusline : std_logic_vector(7 downto 0); --signal for sbus
+signal dbusline : std_logic_vector(7 downto 0); --signal for dbus
+signal addressbus : std_logic_vector(7 downto 0); --signal for address bus; output of PC block
+signal datainbus : std_logic_vector(7 downto 0); --signal for datain; output of memory block
+signal middlemux : std_logic_vector(7 downto 0); --output of middle mux
+signal zline : std_logic; --signal for zero out of register file
+signal nline : std_logic; --signal for negative out of register file
+signal reset : std_logic; --signal for reset; not used
+signal irline : std_logic_vector(7 downto 0); --signal for output of IR 
+signal imline : std_logic_vector(7 downto 0); --signal for output of IM register
 --Control Lines
-signal addrselline : std_logic_vector(1 downto 0);
-signal irloadline : std_logic;
-signal imloadline : std_logic;
-signal regselline : std_logic_vector(1 downto 0);
-signal dwriteline : std_logic;
-signal aluopline : std_logic_vector(1 downto 0);
-signal readwriteline : std_logic;
-signal pcselline : std_logic;
-signal pcloadline : std_logic;
-signal sregselline : std_logic_vector(1 downto 0);
-signal dregselline : std_logic_vector(1 downto 0);
-signal stageline : std_logic_vector(1 downto 0);
+signal addrselline : std_logic_vector(1 downto 0); --addrsel output of decode
+signal irloadline : std_logic; --irload output of decode
+signal imloadline : std_logic; --imload output of decode
+signal regselline : std_logic_vector(1 downto 0); --regsel output of decode
+signal dwriteline : std_logic; --dwrite output of decode
+signal aluopline : std_logic_vector(1 downto 0); --aluop output of decode
+signal readwriteline : std_logic; --readwrite output of decode
+signal pcselline : std_logic; -- pcsel output of decode
+signal pcloadline : std_logic; --pcload output of decode
+signal sregselline : std_logic_vector(1 downto 0); --sregsel output of decode
+signal dregselline : std_logic_vector(1 downto 0); --dregsel output of decode
+signal stageline : std_logic_vector(1 downto 0); --signal for stage; output of stage counter
 
 begin
 
 Regs: Register_File port map(dwrite=>dwriteline,dval=>middlemux,sregsel=>sregselline,dregsel=>dregselline,sbus=>sbusline,dbus=>dbusline,Zero=>zline,Negative=>nline,clk=>clk,reset=>reset);
 Decode: Decode_Logic port map(instruction=>irline,zero=>zline,negative=>nline,stage=>stageline,addrsel=>addrselline,irload=>irloadline,imload=>imloadline,regsel=>regselline,dwrite=>dwriteline,aluop=>aluopline,readwrite=>readwriteline,pcsel=>pcselline,pcload=>pcloadline,sregsel=>sregselline,dregsel=>dregselline);
-
+PCBlock: PC port map(Immed_in=>imline,clk=>clk,pcsel=>pcselline,pcload=>pcloadline,sbus=>sbusline,dbus=>dbusline,addrsel=>addrselline,address=>addressbus);
+ALUBlock: ALU port map(A=>dbusline,B=>sbusline,aluop=>aluopline,result=>aluoutbus);
+IR_reg_block: IR_reg port map(IR_in=>datainbus,IR_out=>irline,clk=>clk,enable=>irloadline);
+Immed_reg_block: Immed_reg port map(Immed_in=>datainbus,Immed_out=>imline,clk=>clk,enable=>imloadline);
+MemoryBlock: MEMORY port map(address=>addressbus,dataout=>datainbus,datain=>dbusline,readwrite=>readwriteline,clk=>clk,rst=>reset);
+StageCounter: Stage_Count port map(clk=>clk,rst=>reset,stage=>stageline);
+MiddleMuxBlock: mux8 port map(a=>imline,b=>sbusline,c=>datainbus,d=>aluoutbus,s=>regselline,output=>middlemux);
+        
+sbus<=sbusline;
+dbus<=dbusline;
+aluout<=aluoutbus;
+immed<=imline;
+aluop<=aluopline;
+negative<=nline;
+zero<=zline;
+pcsel<=pcselline;
+pcload<=pcloadline;
 
 end Behavioral;

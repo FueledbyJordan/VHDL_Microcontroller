@@ -48,60 +48,60 @@ begin
     process
     begin
         wait for T/2;
-        readwrite <= '0';
+        readwrite <= '1';
         clk <= '1';
         rst <= '0';
         wait for T/2;
         clk <= '0';
         address <= STD_LOGIC_VECTOR(to_unsigned(12, address'length));
-        readwrite <= '1';
+        readwrite <= '0';
         datain <= "11001100";
         wait for T/2;
         clk <= '1';
         wait for T/2;
         clk <= '0';
         address <= STD_LOGIC_VECTOR(to_unsigned(12, address'length));
-        readwrite <= '0';
+        readwrite <= '1';
         wait for T/2;
         clk <= '1';     --should set Memory(12) = 204;
         wait for T/2;
         clk <= '0';
-        readwrite <= '1';
+        readwrite <= '0';
         wait for T/2;
         clk <= '1';     --should read 204 from Memory(12)
         wait for T/2;
         clk <= '0';
         datain <= "00110011";
-        readwrite <= '0';
+        readwrite <= '1';
         wait for T/2;
         clk <= '1';     --should set Memory(12) = 51
         wait for T/2;
         clk <= '0';
-        readwrite <= '1';
+        readwrite <= '0';
         wait for T/2;
         clk <= '1';     --should read 51 from Memory(12)
         wait for T/2;
         clk <= '0';
         wait for T/2;
-        readwrite <= '0';
+        readwrite <= '1';
         clk <= '1';
         rst <= '0';
         wait for T/2;
         clk <= '0';
         address <= STD_LOGIC_VECTOR(to_unsigned(13, address'length));
-        readwrite <= '1';
+        readwrite <= '0';
         datain <= "11110010";
         wait for T/2;
         clk <= '1';
         wait for T/2;
         clk <= '0';
         address <= STD_LOGIC_VECTOR(to_unsigned(13, address'length));
-        readwrite <= '0';
+        readwrite <= '1';
         wait for T/2;
         clk <= '1';     --should set Memory(13) = 242;
         wait for T/2;
         clk <= '0';
-        readwrite <= '1';
+        readwrite <= '0';
         wait for T/2;
         clk <= '1';     --should read 242 from Memory(12)
         wait;

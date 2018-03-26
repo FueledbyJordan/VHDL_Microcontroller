@@ -118,7 +118,7 @@ def instruction_to_binary(instruction):
         Instructions.append(binary(immed))
 
 def populate_memory():
-    lines = open('.src/Nums_To_Add.txt')
+    lines = open('.src/Nums_To_Load.txt')
     for line in lines:
         line = line.strip()
         line = line.upper()

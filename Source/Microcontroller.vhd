@@ -97,7 +97,7 @@ component MEMORY is
         clk : in std_logic := '0';
         rst : in std_logic := '0'
     );
-END COMPONENT;
+end component;
 
 component Stage_Count is
   Port ( 

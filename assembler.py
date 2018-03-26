@@ -126,8 +126,6 @@ def populate_memory():
         content = content.replace("0X","")
         sys.stdout.write("MEMORY(" + addr + ") <= \"" + binary(content) + "\";\n")
         sys.stdout.flush()
-    addr = str(int(addr) + 1)
-    sys.stdout.write("MEMORY(" + addr + ") <= \"" + "00000000" + "\";\n")
 
 def mem_file_writer_header():
     header_lines = open('.src/mem_file_header.vhd')

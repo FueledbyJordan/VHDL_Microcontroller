@@ -75,7 +75,7 @@ REGPC : PC_reg
 AddrMUX : mux_4_1
     port map (in_0=>temp_PC_out,in_1=>Immed_in,in_2=>sbus,in_3=>dbus,
                 op=>addrsel,out_mux=>temp_address);
-                
+               
 PC_plus <= std_logic_vector(unsigned(temp_PC_out) + "00000001");
 address <= temp_address;
 end Behavioral;

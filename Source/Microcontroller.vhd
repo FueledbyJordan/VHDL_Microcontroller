@@ -5,7 +5,6 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity Microcontroller is
     Port(
-        instruction : in std_logic_vector(7 downto 0);
         clk : in std_logic;
         sbus : out std_logic_vector(7 downto 0);
         dbus : out std_logic_vector(7 downto 0);
@@ -15,7 +14,10 @@ entity Microcontroller is
         negative : out std_logic;
         zero : out std_logic;
         pcsel : out std_logic;
-        pcload : out std_logic
+        stage : out std_logic_vector(1 downto 0);
+        pcload : out std_logic;
+        addressout : out std_logic_vector(7 downto 0);
+        irlineout : out std_logic_vector(7 downto 0)
     );
 end entity;
 
@@ -69,7 +71,7 @@ component ALU is
     Port (
         A : in STD_LOGIC_VECTOR(7 downto 0);
         B : in STD_LOGIC_VECTOR(7 downto 0);
-        aluop : in STD_LOGIC_VECTOR(3 downto 0);
+        aluop : in STD_LOGIC_VECTOR(1 downto 0);
         result : out STD_LOGIC_VECTOR(7 downto 0)
     );
 end component;
@@ -97,7 +99,7 @@ component MEMORY is
         clk : in std_logic := '0';
         rst : in std_logic := '0'
     );
-end component;
+END COMPONENT;
 
 component Stage_Count is
   Port ( 
@@ -163,5 +165,8 @@ negative<=nline;
 zero<=zline;
 pcsel<=pcselline;
 pcload<=pcloadline;
+stage<=stageline;
+addressout<=addressbus;
+irlineout<=datainbus;
 
 end Behavioral;

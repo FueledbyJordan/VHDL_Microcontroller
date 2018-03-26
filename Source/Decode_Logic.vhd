@@ -139,7 +139,7 @@ begin
     Reg_Sel : Register_Select port map(ALU_out=>ALU_out,Datain=>Datain,Rs=>Rs,Immediate=>PC,op1=>op1,op2=>op2,stage=>stage,regsel=>regsel);
     PC_Load : PCL port map(zero=>zero,negative=>negative,irbit=>instruction,op2=>op2,stage=>stage,pcload=>pcload);
         
-    process(stage,instruction)
+    process(stage)
     begin
         irbit4_temp := irbit4;
         irbit5_temp := irbit5;

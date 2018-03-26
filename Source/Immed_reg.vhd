@@ -33,7 +33,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity Immed_reg is
     Port ( Immed_in : in STD_LOGIC_VECTOR (7 downto 0);
-           Immed_out : out STD_LOGIC_VECTOR (7 downto 0);
+           Immed_out : out STD_LOGIC_VECTOR (7 downto 0) := (others => '0');
            clk : in STD_LOGIC;
            enable : in STD_LOGIC);
 end Immed_reg;

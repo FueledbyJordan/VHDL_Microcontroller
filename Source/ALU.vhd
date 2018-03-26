@@ -1,21 +1,21 @@
 ----------------------------------------------------------------------------------
--- Company: 
+-- Company:
 -- Engineer: DJM
--- 
+--
 -- Create Date: 03/19/2018 02:28:34 PM
--- Design Name: 
+-- Design Name:
 -- Module Name: ALU.vhd
 -- Project Name: Microcontroller
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
+-- Target Devices:
+-- Tool Versions:
+-- Description:
+--
+-- Dependencies:
+--
 -- Revision:
 -- Revision 0.01 - File Created
 -- Additional Comments:
--- 
+--
 ----------------------------------------------------------------------------------
 
 library IEEE;
@@ -37,7 +37,7 @@ end entity;
 architecture Arch of ALU is
     constant DATA_WIDTH : integer := 8;
     constant OP_WIDTH : integer := 2;
-    
+
     constant ZERO : STD_LOGIC_VECTOR(DATA_WIDTH - 1 downto 0) := "00000000";
 
     constant OP_AND : STD_LOGIC_VECTOR(OP_WIDTH - 1 downto 0) := "00";
@@ -65,4 +65,3 @@ begin
         end case;
     end process;
 end Arch;
-

@@ -117,13 +117,55 @@ def instruction_to_binary(instruction):
         immed = immed.replace("0X","")
         Instructions.append(binary(immed))
 
-lines = open('instructions.asm', 'r')
+def populate_memory():
+    lines = open('.src/Nums_To_Add.txt')
+    for line in lines:
+        line = line.strip()
+        line = line.upper()
+        addr, content = line.split(' ')
+        content = content.replace("0X","")
+        sys.stdout.write("MEMORY(" + addr + ") <= \"" + binary(content) + "\";\n")
+        sys.stdout.flush()
+
+def mem_file_writer_header():
+    header_lines = open('.src/mem_file_header.vhd')
+    for line in header_lines:
+        line = line.strip()
+        sys.stdout.write(line + "\n")
+        sys.stdout.flush()
+
+def mem_file_writer_footer():
+    header_lines = open('.src/mem_file_footer.vhd')
+    for line in header_lines:
+        line = line.strip()
+        sys.stdout.write(line + "\n")
+        sys.stdout.flush()
+
+lines = open('.src/instructions.asm', 'r')
 
 for line in lines:
     line = line.strip()
     instruction_to_binary(line)
 lines.close()
 
+mem_file_writer_header()
+sys.stdout.write("MEMORY(0) <= \"00000000\";\n")
+
+i = 1
+
 for instruction in Instructions:
-    sys.stdout.write(instruction + "\n")
+    sys.stdout.write("MEMORY(")
+    sys.stdout.write(str(i))
+    sys.stdout.write(") <= \"")
+    sys.stdout.write(instruction + "\";\n")
     sys.stdout.flush()
+    i = i + 1
+
+sys.stdout.write("MEMORY(")
+sys.stdout.write(str(i))
+sys.stdout.write(") <= \"")
+sys.stdout.write("00000000\";\n")
+
+populate_memory()
+
+mem_file_writer_footer()

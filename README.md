@@ -11,7 +11,7 @@ This code was written and is maintained by:
 
 ## To Use The Assembler
 The file that holds the assembly instructions is .src/instructions.asm
-The file that holds the data in memory is .src/Nums_To_Add.txt
+The file that holds the data in memory is .src/Nums_To_Load.txt
 These files can be edited to the end user's liking.  The code is assembled by running the following command.
 
 ```shell

@@ -5,7 +5,7 @@ Instructions = []
 
 binary = lambda x: " ".join(reversed( [i+j for i,j in zip( *[ ["{0:04b}".format(int(c,16)) for c in reversed("0"+x)][n::2] for n in [1,0] ] ) ] ))
 
-def instr_dict(x):
+def instr_dict(x):  #specified instructions for our ISA
     return {
         "AND" : "0000",
         "OR" : "0001",
@@ -25,7 +25,7 @@ def instr_dict(x):
         "JMP" : "1111",
     }[x]
 
-def reg_dict(x):
+def reg_dict(x):  #registers specific to our VHDL assignment
     return{
         "R0" : "00",
         "R1" : "01",
@@ -35,8 +35,8 @@ def reg_dict(x):
 
 def hex_to_binary(hex):
     hex = hex.upper()
-    hex = hex.replace(" ", "")
-    hex = hex.replace("0X", "")
+    hex = hex.replace(" ", "")  #strip any spaces
+    hex = hex.replace("0X", "")  #remove leading hex notation
     binary_string = binary(hex)
     return str(binary_string)
 
@@ -112,12 +112,12 @@ def instruction_to_binary(instruction):
         Rs = "R3"
         immed = instruction.split(" ")[1]
     
-    Instructions.append(instr_dict(opcode) + reg_dict(Rd) + reg_dict(Rs))
-    if (instr_dict(opcode)[0] == '1'):
+    Instructions.append(instr_dict(opcode) + reg_dict(Rd) + reg_dict(Rs)) #push instruction to the list.
+    if (instr_dict(opcode)[0] == '1'):  #MSB == 1 means immediate register is used in our ISA
         immed = immed.replace("0X","")
         Instructions.append(binary(immed))
 
-def populate_memory():
+def populate_memory():  #fill memory with data to be worked on
     lines = open('.src/Nums_To_Load.txt')
     for line in lines:
         line = line.strip()
@@ -127,14 +127,14 @@ def populate_memory():
         sys.stdout.write("MEMORY(" + addr + ") := \"" + binary(content) + "\";\n")
         sys.stdout.flush()
 
-def mem_file_writer_header():
+def mem_file_writer_header():  #top part of file
     header_lines = open('.src/mem_file_header.vhd')
     for line in header_lines:
         line = line.strip()
         sys.stdout.write(line + "\n")
         sys.stdout.flush()
 
-def mem_file_writer_footer():
+def mem_file_writer_footer():  #bottom of file. Probably redundant. But explicit.
     header_lines = open('.src/mem_file_footer.vhd')
     for line in header_lines:
         line = line.strip()
@@ -149,9 +149,9 @@ for line in lines:
 lines.close()
 
 mem_file_writer_header()
-sys.stdout.write("MEMORY(0) := \"00000000\";\n")
+#sys.stdout.write("MEMORY(0) := \"00000000\";\n")
 
-i = 1
+i = 0
 
 for instruction in Instructions:
     sys.stdout.write("MEMORY(")
